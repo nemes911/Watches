@@ -43,5 +43,12 @@ public:
     std::list<Watcher*> GetAll() override {
 
     }
+    DiveComp operator--(int) {
+        DiveComp temp = *this;
+        if (CurDepth > 0) {
+            CurDepth--;
+        }
+        return temp;
+    }
 };
 
