@@ -1,0 +1,7 @@
+Main menu
+
+1. About program
+2. Manual
+3. About author
+4. Settings
+5. Exit

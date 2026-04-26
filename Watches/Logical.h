@@ -1,14 +1,21 @@
-#include "DiveComp.h"
-#include "DivingWatches.h"
-#include "GTMWatches.h"
-#include "Temp.h"
-#include "User.h"
-#include <string>
-
 #pragma once
+#include <map>
+#include <string>
+#include "iostream"
 
-std::string path;
+using namespace std;
 
-void SetPath(std::string new_path) {
-	if(fopen(new_path))
-}
+extern map<string, string> lang;
+extern map<string, string> config;
+
+void start_program();
+void loadLanguage(string filename);
+void LoadConfig();
+void saveConfig();
+
+void mainMenu();
+void settingsMenu();
+
+void Display(const string& path);
+
+void zastavka_();

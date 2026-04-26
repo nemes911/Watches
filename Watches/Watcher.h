@@ -7,8 +7,8 @@ class  Watcher
 public:
 	std::string Time;
 	bool Type_time;
-	virtual std::list<Watcher*> GetAll() = 0;
+	virtual int GetAll() = 0;
 
-	virtual ~Watcher() {}
+	virtual ~Watcher() = default;
 };
 

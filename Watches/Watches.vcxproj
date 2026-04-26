@@ -127,12 +127,33 @@
     <ClInclude Include="DivingWatches.h" />
     <ClInclude Include="GTMWatches.h" />
     <ClInclude Include="Logical.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Temp.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="Watcher.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DiveComp.cpp" />
     <ClCompile Include="DivingWatches.cpp" />
+    <ClCompile Include="GTMWatches.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="menu.cpp" />
+    <ClCompile Include="User.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="author_en.txt" />
+    <Text Include="author_ru.txt" />
+    <Text Include="config.txt" />
+    <Text Include="lang_en.txt" />
+    <Text Include="lang_ru.txt" />
+    <Text Include="log_en.txt" />
+    <Text Include="log_ru.txt" />
+    <Text Include="menu_en.txt" />
+    <Text Include="menu_ru.txt" />
+    <Text Include="o_programme_en.txt" />
+    <Text Include="o_programme_ru.txt" />
+    <Text Include="rykovodstvo_en.txt" />
+    <Text Include="rykovodstvo_ru.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

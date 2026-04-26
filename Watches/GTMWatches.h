@@ -8,27 +8,18 @@ public:
     std::string SecondTime;
     int GTMOffset;
     std::string SecondZoneName;
-    void SetSecondTime(std::string SecondZoneName) {
-        this->SecondZoneName = SecondZoneName;
-    }
-    std::string GetSecondZoneName() {
-        return this->SecondZoneName;
-    }
-    void SetGTMOffset(int GTMOffset) {
-        this->GTMOffset = GTMOffset;
-    }
-    int GetGTMOffset() {
-        return this->GTMOffset;
-    }
-    GTMWatches() {}
-    GTMWatches(std::string SecondTime, int GTMOffset, std::string SecondZoneName) {
-        this->SecondTime = SecondTime;
-        this->GTMOffset = GTMOffset;
-        this->SecondZoneName = SecondZoneName;
-    }
-    ~GTMWatches(){}
-    std::list<Watcher*> GetAll() override {
+    static int count;
+    void SetSecondTime(std::string SecondZoneName);
+    std::string GetSecondZoneName();
+    void SetGTMOffset(int GTMOffset);
+    int GetGTMOffset();
+    GTMWatches();
+    GTMWatches(std::string SecondTime, int GTMOffset, std::string SecondZoneName);
+    ~GTMWatches();
+    int GetAll() override;
 
-    }
+    GTMWatches operator++ (int);
+
+
 };
 

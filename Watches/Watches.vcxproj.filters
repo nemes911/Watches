@@ -36,10 +36,69 @@
     <ClInclude Include="User.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DivingWatches.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="DiveComp.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="GTMWatches.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="User.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="menu.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="author_ru.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="author_en.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="o_programme_ru.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="o_programme_en.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="rykovodstvo_ru.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="rykovodstvo_en.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="config.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="lang_ru.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="lang_en.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="menu_en.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="menu_ru.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="log_ru.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="log_en.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
   </ItemGroup>
 </Project>

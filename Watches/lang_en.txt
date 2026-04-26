@@ -1,0 +1,15 @@
+MENU=Main menu
+MENU_1=1. About program
+MENU_2=2. Manual
+MENU_3=3. About author
+MENU_4=4. Settings
+MENU_5=5. Exit
+
+SETTINGS=Settings
+SETTINGS_1=1. Change language
+SETTINGS_2=2. Change data file
+ENTER_CHOICE=Enter choice:
+ENTER_LANG=Enter language (ru/en):
+ENTER_PATH=Enter file path:
+ERROR_FILE=File open error
+ERROR_INPUT=Input error
