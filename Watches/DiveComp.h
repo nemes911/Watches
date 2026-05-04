@@ -12,8 +12,12 @@ public:
     int NumberDives;
     int Temp;
     static int count;
+    static int nextid;
     int CurDepth;
     char* Mix;
+
+    static int GetCount();
+
     void SetMix(char* Mix);
     char* GetMix();
 
@@ -21,11 +25,17 @@ public:
 
     int GetTemp();
 
+    void Save() override;
+
     DiveComp();
     DiveComp(char* Vid, int Count, int TimeCicle, int NumberDivers, int Temp, int CurDepth, char* Mix);
     ~DiveComp();
     DiveComp operator--(int);
 
     int GetAll();
+
+    void Calculate();
+
+    void CreateDiveComp(const DiveComp& d);
 };
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -144,16 +144,19 @@
     <Text Include="author_en.txt" />
     <Text Include="author_ru.txt" />
     <Text Include="config.txt" />
+    <Text Include="DiveComp.txt" />
+    <Text Include="DivingWatches.txt" />
+    <Text Include="GTMWatches.txt" />
     <Text Include="lang_en.txt" />
     <Text Include="lang_ru.txt" />
-    <Text Include="log_en.txt" />
-    <Text Include="log_ru.txt" />
     <Text Include="menu_en.txt" />
     <Text Include="menu_ru.txt" />
     <Text Include="o_programme_en.txt" />
     <Text Include="o_programme_ru.txt" />
     <Text Include="rykovodstvo_en.txt" />
     <Text Include="rykovodstvo_ru.txt" />
+    <Text Include="User.txt" />
+    <Text Include="Watches.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

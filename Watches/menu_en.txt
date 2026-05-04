@@ -5,3 +5,6 @@ Main menu
 3. About author
 4. Settings
 5. Exit
+
+
+Want do import file? y\n

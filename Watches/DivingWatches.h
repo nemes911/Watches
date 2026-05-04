@@ -10,8 +10,10 @@ public:
 	bool Type;
 	int Depth;
 	int Bezel;
-
+	static int nextid;
 	static int count;
+
+	static int GetCount();
 
 	void SetDepth(int Depth);
 
@@ -21,6 +23,12 @@ public:
 
 	int GetBezel();
 
+	void BeginTheUnderwater();
+
+	int ExtractMinutes(const std::string& time);
+
+	int GetDiveTime();
+
 	DivingWatches();
 
 	DivingWatches(std::string Time, bool Type, int Depth, int Bezel);
@@ -29,6 +37,10 @@ public:
 
 	int GetAll() override;
 	
+	void Save() override;
 
+	void Print() override;
+
+	void CtreatedDivingWatches(const DivingWatches& w);
 };
 
