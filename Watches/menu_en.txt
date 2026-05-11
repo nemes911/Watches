@@ -8,3 +8,7 @@ Main menu
 
 
 Want do import file? y\n
+
+
+
+Make path to logs file

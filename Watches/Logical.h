@@ -25,3 +25,6 @@ void SwimingScenaries(User& user);
 void DiveScenario(User& user);
 void zastavka_();
 int GetNextWatchId();
+void SetPathForLogs(std::string path);
+void CreateLogFile(std::string path);
+void AddLog(std::string message);

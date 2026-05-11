@@ -15,6 +15,8 @@ using namespace std;
 map<string, string> lang;
 map<string, string> config;
 
+std::string logPath = "logs.txt";
+
 // ================= FILE DISPLAY =================
 void Display(const string& path) {
     ifstream file(path);
@@ -363,6 +365,8 @@ void zastavka_() {
     cin >> bezel;
     DivingWatches* dive = new DivingWatches(time, type, depth, bezel);
 
+    dive->CtreatedDivingWatches(*dive);
+
     dive->user_id = user.id;
 
     dive->BeginTheUnderwater();
@@ -374,56 +378,164 @@ void zastavka_() {
 
 // ================= SWIMING SCENARIES WITH DIVECOMP =================
  void DiveScenario(User& user) {
-    string time;
-    cout << "Enter time (HH:MM): ";
-    cin >> time;
 
-    int depth;
-    cout << "Enter start depth: ";
-    cin >> depth;
+     string time;
 
-    int temp;
-    cout << "Enter water temperature: ";
-    cin >> temp;
+     cout << "Enter time (HH:MM): ";
+     cin >> time;
 
-    char* mix = nullptr;
- 
-    char* mode = nullptr;
-    
+     int targetDepth;
 
-    DiveComp* dive = new DiveComp(mode, 1, 60, 100, temp, depth, mix);
+     cout << "Enter target depth: ";
+     cin >> targetDepth;
 
-    dive->Time = time;
-    dive->user_id = user.id;
+     int temp;
 
-    user.AddWatch(dive);
+     cout << "Enter water temperature: ";
+     cin >> temp;
 
-    cout << "\n--- Dive started ---\n";
+     char* mix = (char*)"Air";
+     char* mode = (char*)"Recreational";
 
-    // 🟡 Анализ перед началом
-    dive->Calculate();
+     DiveComp* dive =
+         new DiveComp(mode, 1, 60, 100, temp, 0, mix);
 
-    // 🟡 Имитация погружения
-    for (int i = 0; i < 3; i++) {
-        cout << "\nDescending...\n";
-        dive->CurDepth += 5;
+     dive->Time = time;
+     dive->user_id = user.id;
 
-        dive->Calculate();
-    }
+     user.AddWatch(dive);
 
-    // 🟡 ВСПЛЫТИЕ (через оператор --)
-    cout << "\n--- Ascending ---\n";
+     cout << "\n--- Dive started ---\n";
 
-    for (int i = 0; i < 3; i++) {
-        (*dive)--;  // используем перегрузку
-        cout << "Depth: " << dive->CurDepth << endl;
-    }
+     AddLog("Dive started");
 
-    cout << "\n--- Dive finished ---\n";
-    dive->Calculate();
+     // ================= DESCENT =================
 
-    dive->Save();
-}
+     cout << "\nDescending...\n";
+
+     while (dive->CurDepth < targetDepth) {
+
+         dive->CurDepth += 5;
+
+         if (dive->CurDepth > targetDepth)
+             dive->CurDepth = targetDepth;
+
+         cout << "Depth: "
+             << dive->CurDepth << " m\n";
+
+         AddLog(
+             "Depth reached: "
+             + to_string(dive->CurDepth)
+         );
+     }
+
+     cout << "\n--- Target depth reached ---\n";
+
+     // ================= MAIN DIVE =================
+
+     bool diving = true;
+
+     int diveMinutes = 0;
+
+     while (diving) {
+
+         cout << "\n===== DIVE MENU =====\n";
+
+         cout << "Depth: "
+             << dive->CurDepth << " m\n";
+
+         cout << "Dive time: "
+             << diveMinutes << " min\n";
+
+         cout << "1. Stay 15 minutes\n";
+         cout << "2. Ascend 1 meter\n";
+         cout << "3. Emergency ascent\n";
+         cout << "4. Finish dive\n";
+
+         int choice;
+         cin >> choice;
+
+         switch (choice) {
+
+         case 1:
+
+             diveMinutes += 15;
+
+             cout << "\nStaying underwater...\n";
+
+             AddLog(
+                 "Stay underwater for 15 min"
+             );
+
+             break;
+
+         case 2:
+
+             if (dive->CurDepth > 0) {
+
+                 (*dive)--;
+
+                 cout << "\nAscending slowly...\n";
+
+                 AddLog(
+                     "Ascend to "
+                     + to_string(dive->CurDepth)
+                 );
+             }
+             else {
+                 cout << "Already on surface\n";
+             }
+
+             break;
+
+         case 3:
+
+             cout << "\n!!! EMERGENCY ASCENT !!!\n";
+
+             dive->CurDepth = 0;
+
+             AddLog("Emergency ascent");
+
+             diving = false;
+
+             break;
+
+         case 4:
+
+             if (dive->CurDepth == 0) {
+
+                 diving = false;
+             }
+             else {
+
+                 cout << "\nAscend before finishing dive\n";
+             }
+
+             break;
+
+         default:
+             cout << "Invalid action\n";
+             break;
+         }
+
+         dive->Calculate();
+
+         // safety stop imitation
+
+         if (dive->CurDepth == 5) {
+
+             cout << "\nSAFETY STOP RECOMMENDED\n";
+
+             AddLog("Safety stop at 5m");
+         }
+     }
+
+     cout << "\n--- Dive finished ---\n";
+
+     AddLog("Dive finished");
+
+     dive->Save();
+ }
 
 // ================= FLY =================
  void FlightScenario(User& user) {
@@ -446,6 +558,8 @@ void zastavka_() {
 
     user.AddWatch(gtm);
 
+    gtm->CreatedGTMWatches(*gtm);
+
     cout << "\n--- Flight started ---\n";
 
 
@@ -465,3 +579,45 @@ void zastavka_() {
 
     gtm->Save();
 }
+
+ void CreateLogFile(std::string path) {
+     if (path.empty()) {
+         path = "logs.txt";
+     }
+     std::ofstream file(path, ios::app);
+
+     if (!file.is_open()) {
+         cout << "Log file create error\n";
+         return;
+     }
+
+     file << "=== LOG FILE CREATED ===\n";
+
+     file.close();
+ }
+
+ void SetPathForLogs(std::string path) {
+     
+     
+     if (path.empty()) {
+         logPath = "logs.txt";
+     }
+     else {
+         logPath = path;
+     }
+}
+
+ void AddLog(std::string message) {
+     std::ofstream file(logPath, ios::app);
+
+     if (!file.is_open()) {
+         cout << "Log open error\n";
+         return;
+     }
+
+     file << message << std::endl;
+
+     file.close();
+
+ }
+

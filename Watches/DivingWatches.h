@@ -25,6 +25,8 @@ public:
 
 	void BeginTheUnderwater();
 
+	int GetDiveDuration(std::string currentTime);
+
 	int ExtractMinutes(const std::string& time);
 
 	int GetDiveTime();

@@ -31,6 +31,17 @@ void DivingWatches::BeginTheUnderwater() {
 	cout << "Начало погружения\n";
 }
 
+int DivingWatches::GetDiveDuration(string currentTime) {
+	int start = Bezel;
+	int now = ExtractMinutes(currentTime);
+
+	int duration = now - start;
+
+	if (duration < 0) duration += 60;
+
+	return duration;
+}
+
 
 int DivingWatches::ExtractMinutes(const std::string& time) {
 	return stoi(time.substr(3, 2));
