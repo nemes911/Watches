@@ -14,9 +14,24 @@ public:
     static int count;
     static int nextid;
     int CurDepth;
+    int MaxDepth;
+    int DiveTime;
     char* Mix;
 
     static int GetCount();
+
+    void SetMaxDepth(int depth);
+    int GetMaxDepth() const;
+
+    void StartDescent();
+
+    bool Ascend(int meters = 1);
+
+    void Stay(int minutes);
+
+    void Calculate();
+
+    void PrintStatus() const;
 
     void SetMix(char* Mix);
     char* GetMix();
@@ -31,10 +46,11 @@ public:
     DiveComp(char* Vid, int Count, int TimeCicle, int NumberDivers, int Temp, int CurDepth, char* Mix);
     ~DiveComp();
     DiveComp operator--(int);
+    DiveComp& operator--();
 
     int GetAll();
 
-    void Calculate();
+
 
     void CreateDiveComp(const DiveComp& d);
 };

@@ -6,6 +6,8 @@
 #include "GTMWatches.h"
 #include "DiveComp.h"
 #include "DivingWatches.h"
+#include "Watcher.h"
+#include <vector>
 
 using namespace std;
 
@@ -84,6 +86,20 @@ void User::PrintWatches() {
 	cout << "DivingWatches" << DivingWatches::GetCount() << endl;
 }
 
+ const std::vector<Watcher*>& User::GetWatches() const{
+	return watches;
+}
+
  int User::GetCount() {
 	 return count;
 }
+
+ int User::GetWatchCount() const{
+	 return watches.size();
+ }
+
+ void User::ClearWatches() {
+	 for (auto* w : watches) 
+		 delete w;
+	 watches.clear();
+ }

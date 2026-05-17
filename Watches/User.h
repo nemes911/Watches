@@ -30,7 +30,10 @@ public:
 	void CreatedUser(const User& u);
 	int Trigger_Before_Create();
 	void AddWatch(Watcher* w);
+	const std::vector<Watcher*>& GetWatches() const;
 	void PrintWatches();
 	static int GetCount();
+	int GetWatchCount() const;
+	void ClearWatches(); 
 };
 

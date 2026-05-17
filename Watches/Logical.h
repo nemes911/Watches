@@ -18,7 +18,9 @@ void mainMenu();
 void DisplayMenuUntilMarker(const string& path, string& markerLine);
 void settingsMenu();
 
-void Display(const string& path);
+void DisplaySection(const std::string& path, const std::string& startMarker = "", const std::string& endMarker = "");
+std::string GetLang(const std::string& key);
+void PrintLang(const std::string& key);
 
 void FlightScenario(User& user);
 void SwimingScenaries(User& user);
@@ -28,3 +30,6 @@ int GetNextWatchId();
 void SetPathForLogs(std::string path);
 void CreateLogFile(std::string path);
 void AddLog(std::string message);
+
+void SaveSession(User& user);
+bool LoadSession(User& user);

@@ -12,3 +12,44 @@ Want do import file? y\n
 
 
 Make path to logs file
+
+
+Set the time:
+Watch type (1 - digital, 0 - mechanical):
+Digital or mechanical:
+Maximum depth:
+Bezel:
+
+=== Dive Computer Scenario ===
+Current time (HH:MM):
+Maximum dive depth (m):
+Water temperature (°C):
+Dive started!
+
+=== Controls ===
+1. Stay at depth (15 min):
+2. Ascend 1 meter (--):
+3. Ascend 5 meters:
+4. Emergency ascent:
+5. End dive:
+Choice:
+
+
+
+=== Flight / Time Zone Change Scenario ===
+Enter current local time (HH:MM):
+Enter current GMT offset (e.g. +3):
+Enter current time zone name (e.g. Moscow):
+Flight duration in minutes (or hours*60):
+Destination time zone (name):
+Destination GMT offset:
+
+=== Flight started ===
+
+=== Flight Control ===
+1. Simulate a 30-minute flight
+2. Simulate a 1-hour flight
+3. Change time zone (stopover)
+4. Arrive at destination
+5. Complete scenario
+Choice:

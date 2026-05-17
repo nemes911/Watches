@@ -82,6 +82,50 @@ void GTMWatches::Print() {
 	cout << "==============\n";
 }
 
+void GTMWatches::StartFlight(int durationMinutes) {
+	FlightTime = durationMinutes;
+	OriginalOffset = GTMOffset;
+	std::cout << "\n=== Полёт начат! Продолжительность: "
+		<< durationMinutes << " минут ("
+		<< durationMinutes / 60 << " ч " << durationMinutes % 60 << " мин) ===\n";
+}
+
+void GTMWatches::ChangeTimezone(int newOffset, std::string newZoneName) {
+	GTMOffset = newOffset;
+	SecondZoneName = newZoneName;
+	CalculateSecondTime();
+	std::cout << "\n>>> Смена часового пояса на " << newZoneName
+		<< " (GMT " << (newOffset >= 0 ? "+" : "") << newOffset << ") <<<\n";
+}
+
+void GTMWatches::SimulateFlightStep(int minutesPassed)
+{
+	FlightTime += minutesPassed;
+
+	// Простая симуляция сдвига местного времени
+	int h = ExtractHours(Time);
+	int m = ExtractMinutes(Time);
+	m += minutesPassed;
+	h += m / 60;
+	m %= 60;
+	if (h >= 24) h -= 24;
+
+	Time = (h < 10 ? "0" : "") + std::to_string(h) + ":" +
+		(m < 10 ? "0" : "") + std::to_string(m);
+
+	CalculateSecondTime();
+}
+
+void GTMWatches::PrintStatus() const
+{
+	std::cout << "\n=== GTM Watches - Полёт ===\n";
+	std::cout << "Местное время:     " << Time << "\n";
+	std::cout << "Второе время:      " << SecondTime << " (" << SecondZoneName << ")\n";
+	std::cout << "Текущий GTM:       " << GTMOffset << "\n";
+	std::cout << "Время в полёте:    " << FlightTime << " мин\n";
+	std::cout << "===========================\n";
+}
+
 void GTMWatches::CreatedGTMWatches(const GTMWatches& gtm) {
 	try {
 		ofstream file("GTMWatches.txt", ios::app);
@@ -93,4 +137,9 @@ void GTMWatches::CreatedGTMWatches(const GTMWatches& gtm) {
 	catch (exception& e) {
 		cout << "Critical error: " << e.what() << endl;
 	}
+}
+
+
+void GTMWatches::PrintFlightSummary() const {
+
 }
