@@ -6,7 +6,7 @@
 class DiveComp : public DivingWatches
 {
 private:
-    // Заменили char* на std::string для безопасности
+
  
     std::string Mix;
 

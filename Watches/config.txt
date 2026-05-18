@@ -1,2 +1,2 @@
 data_file=data.txt
-language=ru
+language=en

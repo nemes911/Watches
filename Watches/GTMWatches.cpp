@@ -89,8 +89,8 @@ void GTMWatches::StartFlight(int durationMinutes) {
         return;
     }
 
-    FlightTime = durationMinutes;      // Общая продолжительность полёта
-    OriginalOffset = GTMOffset;        // Запоминаем исходный пояс
+    FlightTime = durationMinutes;      
+    OriginalOffset = GTMOffset;        
 
     std::cout << "\n=== Полёт успешно начат ===\n";
     std::cout << "Продолжительность: " << durationMinutes << " минут ("
@@ -98,7 +98,7 @@ void GTMWatches::StartFlight(int durationMinutes) {
     std::cout << "Отправление: " << Time << " | " 
               << " (GMT" << (GTMOffset >= 0 ? "+" : "") << GTMOffset << ")\n";
     
-    // Можно добавить небольшую паузу или разделитель
+
     std::cout << std::string(50, '-') << "\n";
 }
 
@@ -114,7 +114,6 @@ void GTMWatches::SimulateFlightStep(int minutesPassed)
 {
 	FlightTime += minutesPassed;
 
-	// Простая симуляция сдвига местного времени
 	int h = ExtractHours(Time);
 	int m = ExtractMinutes(Time);
 	m += minutesPassed;

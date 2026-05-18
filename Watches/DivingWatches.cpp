@@ -132,13 +132,12 @@ void DivingWatches::CtreatedDivingWatches(const DivingWatches& w) {
 void DivingWatches::AddDiveTime(int minutes) {
 	if (minutes <= 0) return;
 
-	// Обновляем строку времени
+
 	Time = AddMinutesToTime(Time, minutes);
 
 	std::cout << "Прошло " << minutes << " минут под водой. Текущее время: " << Time << "\n";
 }
 
-// Расчёт времени в зависимости от глубины (примерная модель)
 int DivingWatches::CalculateTimeByDepth(int depth) const
 {
 	if (depth <= 0) return 0;
@@ -149,10 +148,10 @@ int DivingWatches::CalculateTimeByDepth(int depth) const
 	else if (depth <= 40)
 		return (depth / 5) * 2;
 	else
-		return (depth / 5) * 3;   // глубокие погружения
+		return (depth / 5) * 3;   
 }
 
-// Спуск на глубину
+
 void DivingWatches::DescentToDepth(int targetDepth)
 {
 	if (targetDepth <= 0) return;
@@ -175,7 +174,7 @@ void DivingWatches::AscendFromDepth(int meters)
 		return;
 	}
 
-	int timeAdded = (meters / 5) * 2 + (meters % 5 != 0 ? 1 : 0); // всплытие обычно быстрее
+	int timeAdded = (meters / 5) * 2 + (meters % 5 != 0 ? 1 : 0); 
 
 	Depth = std::max(0, Depth - meters);
 	Time = AddMinutesToTime(Time, timeAdded);

@@ -70,7 +70,7 @@ int User::Trigger_Before_Create() {
 
 	return LastId + 1;
 }
-/* Äîáàâèòü ÷àñû Şçåğó*/
+
 
 void User::AddWatch(Watcher* w) {
 	w->user_id = this->id;

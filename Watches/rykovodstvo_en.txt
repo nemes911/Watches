@@ -1,7 +1,69 @@
-fdagf
-sdgfsd
-gs
-dg
-sd
-g
-gd
+=== RYKOVODSTVO ===
+=== USER MANUAL ===
+
+"Object-Oriented Watches System" — Smart Watches Simulator
+
+### 1. Launching the Program
+1. Run the executable file.
+2. The splash screen will appear.
+3. Press **ENTER** to continue.
+4. You will be taken to the main menu.
+
+### 2. Main Menu
+1. New Scenario (create user + start scenario)
+2. About the Author
+3. User Manual (this file)
+4. About the Program
+5. Settings
+6. Load Session
+7. Exit
+
+### 3. Creating a User
+- Enter your name
+- Enter GTM (time zone offset)
+- Enter geographical location (city/region)
+
+### 4. Available Scenarios
+
+**1. Flight (Time Zone Change)**
+- Enter departure time
+- Enter flight duration
+- Enter destination and its GTM
+- During the flight you can:
+  - Simulate time (30 or 60 minutes)
+  - Change time zone
+  - Arrive at destination
+
+**2. Simple Dive (DivingWatches)**
+- Enter dive start time
+- Enter maximum depth
+- Set bezel
+- Choose watch type
+
+**3. Dive Computer (Advanced Diving)**
+- Enter time, max depth and water temperature
+- After descent you can:
+  - Stay at depth (15 min)
+  - Ascend 1 meter
+  - Ascend 5 meters
+  - Emergency ascent
+  - Finish the dive
+
+### 5. Save and Load
+- The session is automatically saved after each scenario.
+- You can load the last session from the main menu (item 6).
+
+### 6. Settings
+- Change language (ru / en)
+- Change file path (in development)
+
+### Useful Tips:
+- Time is displayed in HH:MM format
+- Time automatically increases during ascents and bottom time
+- All actions are logged to logs.txt
+- Always save your session before exiting
+
+---
+
+**Developed at Donetsk National Technical University**
+**Department of Software Engineering, 2025**

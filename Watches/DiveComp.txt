@@ -1,6 +1,0 @@
-Recreational|1|60|100|17|0|Air
-Recreational|1|60|1|-4|0|Air
-Recreational|1|60|1|2|0|Air
-Recreational|1|60|1|-6|0|Air
-Recreational|1|60|1|-7|0|Air
-Recreational|1|60|1|-4|0|Air

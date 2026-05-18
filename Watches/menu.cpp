@@ -10,7 +10,7 @@
 #include "DivingWatches.h"
 #include "GTMWatches.h"
 #include <sstream>
-#include <iomanip>
+
 
 using namespace std;
 
@@ -46,7 +46,7 @@ void DisplaySection(const std::string& path, const std::string& startMarker, con
 
     while (getline(file, line))
     {
-        // Убираем \r для Windows-файлов
+        
         if (!line.empty() && line.back() == '\r') {
             line.pop_back();
         }
@@ -60,19 +60,18 @@ void DisplaySection(const std::string& path, const std::string& startMarker, con
 
         if (!printing) continue;
 
-        // === Конец секции ===
         if (!endMarker.empty() && line.find(endMarker) != std::string::npos)
         {
             break;
         }
 
-        // === Главное изменение: пропускаем ВСЕ строки с "===" (маркеры) ===
+        
         if (line.find("===") != std::string::npos)
         {
-            continue;   // не выводим ни английские, ни русские маркеры
+            continue;   
         }
 
-        // Если строка не пустая после очистки — выводим
+  
         if (!line.empty()) {
             std::cout << line << std::endl;
         }
@@ -195,10 +194,10 @@ void mainMenu_() {
 
             User user("", 0, "");
 
-            // Выводим красивые подсказки из файла
+         
             DisplaySection("menu_" + langCode + ".txt", "=== MAKE USER ===", "=== END USER ===");
 
-            // Сам ввод данных
+          
             cout << "\nВаш выбор: ";
             getline(cin >> ws, user.name);           
 
@@ -243,7 +242,7 @@ void mainMenu()
         system("cls");
         string langCode = config["language"];
 
-        // Выводим ТОЛЬКО главное меню
+
         DisplaySection("menu_" + langCode + ".txt", "=== MAIN MENU ===", "=== END MAIN MENU ===");
 
         PrintLang("ENTER_CHOICE");
@@ -258,7 +257,7 @@ void mainMenu()
             continue;
         }
 
-        if (choice == 1)  // Новый пользователь + сценарий
+        if (choice == 1)  
         {
             system("cls");
             User user("", 0, "");
@@ -267,7 +266,7 @@ void mainMenu()
             PrintLang("ENTER_GTM");      cin >> user.GTM;
             PrintLang("ENTER_GEO");      cin >> user.Geografy;
 
-            // Выводим только блок сценариев
+         
             DisplaySection("menu_" + langCode + ".txt", "=== SCENARIOS ===", "=== END SCENARIOS ===");
 
             int scen;
@@ -316,7 +315,7 @@ void mainMenu()
         }
         else if (choice == 7)
         {
-            break; // Выход
+            break; 
         }
         else
         {
@@ -374,7 +373,7 @@ void start_program() {
         if (line.find("Want do import file?") != string::npos ||
             line.find("Хотите загрузить файл?") != string::npos) {
 
-            markerLine = line; // сохранили строку
+            markerLine = line; 
             break;
         }
     }
@@ -383,66 +382,94 @@ void start_program() {
 // ================= ZASTAVKA =================
  void zastavka_()
  {
-   system("cls");
-
-     std::ifstream fin("zastavka_ru.txt");
-     if (!fin.is_open())
+     while (true)  // Для возможности смены языка
      {
-         std::cout << "Не удалось открыть zastavka_ru.txt\n";
-         
-         return;
-     }
+         system("cls");
 
-     // Выводим весь файл
-     std::string line;
-     while (std::getline(fin, line))
-     {
-         std::cout << line << std::endl;
-     }
+         std::string langCode = config["language"];
+         std::string filename = "zastavka_" + langCode + ".txt";
 
-     fin.close();        // закрываем файл сразу
+         std::ifstream fin(filename);
+         if (!fin.is_open())
+         {
+             // Если файл текущего языка не найден — открываем русский
+             fin.open("zastavka_ru.txt");
+             if (!fin.is_open())
+             {
+                 std::cout << "Не удалось открыть файл заставки!\n";
+                 system("pause");
+                 return;
+             }
+         }
 
-     // Ждём нажатия клавиши
-     while (true)
-     {
-         int key = _getch();
+         std::string line;
+         while (std::getline(fin, line))
+         {
+             std::cout << line << std::endl;
+         }
+         fin.close();
 
-         if (key == 13)                    // ENTER — начать
+         // Ожидание нажатия клавиши (без вывода текста)
+         while (true)
          {
-             system("cls");
-             return;                       // выходим из заставки
+             int key = _getch();
+
+             if (key == 13)                    // ENTER — начать
+             {
+                 system("cls");
+                 return;
+             }
+             else if (key == 9)                // TAB — смена языка
+             {
+                 // Смена языка
+                 if (config["language"] == "ru")
+                     config["language"] = "en";
+                 else
+                     config["language"] = "ru";
+
+                 // Перезагружаем язык
+                 try
+                 {
+                     std::string langFile = "lang_" + config["language"] + ".txt";
+                     loadLanguage(langFile);
+                     saveConfig();
+                 }
+                 catch (...) {
+                 
+                 }
+
+                 break;      
+             }
+             else if (key == 27)               // ESC — выход
+             {
+                 exit(0);
+             }
+             else if (key == 'a' || key == 'A')
+             {
+                 Display("author_" + config["language"] + ".txt");
+                 system("pause");
+                 break;
+             }
+             else if (key == 's' || key == 'S')
+             {
+                 Display("rykovodstvo_" + config["language"] + ".txt");
+                 system("pause");
+                 break;
+             }
+             else if (key == 'd' || key == 'D')
+             {
+                 Display("o_programme_" + config["language"] + ".txt");
+                 system("pause");
+                 break;
+             }
          }
-         else if (key == 9)                // TAB — смена языка
-         {
-             // TODO: смена языка
-             continue;
-         }
-         else if (key == 27)               // ESC — выход
-         {
-             exit(0);
-         }
-         else if (key == 'a' || key == 'A')
-         {
-             // TODO: Об авторе
-             continue;
-         }
-         else if (key == 's' || key == 'S')
-         {
-             // TODO: Руководство оператора
-             continue;
-         }
-         else if (key == 'd' || key == 'D')
-         {
-             // TODO: О программе
-             continue;
-         }
-         // другие клавиши игнорируем
      }
  }
 
  // ================= SWIMING SCENARIES =================
  void SwimingScenaries(User& user)
  {
+     
      system("cls");
      
      DisplaySection("menu_" + config["language"] + ".txt", "=== MAKE DIVE ===", "=== END DIVE ===");
@@ -506,7 +533,7 @@ void start_program() {
      std::cout << "\n> ";
      cin >> temp;
 
-     // Создание объекта
+     
      DiveComp* dive = new DiveComp("Recreational", 1, 60, 1, temp, 0, "Air");
 
      dive->Time = time;
@@ -544,7 +571,7 @@ void start_program() {
              --(*dive);                    // всплытие на 1 метр
              break;
          case 3:
-             dive->Ascend(5);              // ← теперь используем улучшенный метод
+             dive->Ascend(5);             
              break;
          case 4: // Аварийное всплытие
              std::cout << "!!! АВАРИЙНОЕ ВСПЛЫТИЕ !!!\n";
@@ -586,8 +613,8 @@ void start_program() {
      DisplaySection("menu_" + config["language"] + ".txt",
          "=== MAKE FLIGHT ===", "=== END FLIGHT ===");
      std::string time;
-     std::string zone;
-     int offset = 0;
+
+ 
      int flightduration = 0;
      std::string destZone;
      int destOffset = 0;
@@ -595,12 +622,9 @@ void start_program() {
      std::cout << "\n> ";
      getline(cin >> ws, time);
 
-     std::cout << "\n> ";
-     cin >> offset;
+     int offset = user.GTM;
 
-     cin.ignore();
-     std::cout << "\n> ";
-     getline(cin, zone);
+     std::string zone = user.Geografy;
 
      std::cout << "\n> ";
      cin >> flightduration;
@@ -674,7 +698,7 @@ void start_program() {
          return;
      }
 
-     // === 1. Данные пользователя ===
+
      int userId = user.id;
      int gtmOffset = user.GTM;
      size_t nameLen = user.name.length();
@@ -687,12 +711,11 @@ void start_program() {
      file.write((char*)&geoLen, sizeof(geoLen));
      file.write(user.Geografy.c_str(), geoLen);
 
-     // === 2. Количество часов ===
+
      const auto& watches = user.GetWatches();
      int watchCount = watches.size();
      file.write((char*)&watchCount, sizeof(watchCount));
 
-     // === 3. Сохранение каждого объекта ===
      for (auto* w : watches)
      {
          if (GTMWatches* gtm = dynamic_cast<GTMWatches*>(w))
@@ -795,7 +818,7 @@ void start_program() {
 
              file.read((char*)&offset, sizeof(offset));
              gtm->SetGTMOffset(offset);
-             //gtm->GTMOffset = offset;
+        
 
              file.read((char*)&tLen, sizeof(tLen));
              gtm->Time.resize(tLen);
@@ -816,11 +839,11 @@ void start_program() {
 
              user.AddWatch(gtm);
          }
-         else if (type == 2) // DiveComp
+         else if (type == 2) 
          {
              DiveComp* dc = new DiveComp("Recreational", 1, 60, 1, 15, 0, "Air");
 
-             // 2. Безопасно читаем время (Time публичное, но через временную строку чище)
+     
              size_t timeLen = 0;
              file.read((char*)&timeLen, sizeof(timeLen));
              std::string timeStr;
@@ -830,15 +853,14 @@ void start_program() {
              }
              dc->Time = timeStr;
 
-             // 3. Читаем текущую глубину (поле CurDepth публичное, можно напрямую)
              file.read((char*)&dc->CurDepth, sizeof(dc->CurDepth));
 
-             // 4. Читаем температуру (Temp приватное -> через локальную переменную и сеттер)
+
              int tempVal = 0;
              file.read((char*)&tempVal, sizeof(tempVal));
              dc->SetTemp(tempVal);
 
-             // 5. Безопасно читаем смесь (Mix приватное -> через временную std::string)
+          
              size_t mixLen = 0;
              file.read((char*)&mixLen, sizeof(mixLen));
              std::string mixStr;
@@ -846,10 +868,9 @@ void start_program() {
              if (mixLen > 0) {
                  file.read(&mixStr[0], mixLen);
              }
-             dc->SetMix(mixStr); // Передаем локальную строку в сеттер
+             dc->SetMix(mixStr); 
 
-             // 6. ВОССТАНАВЛИВАЕМ СДВИГ ФАЙЛА: Читаем режим (Vid)
-             // Мы записывали его в Save(), значит обязаны считать здесь!
+           
              size_t vidLen = 0;
              file.read((char*)&vidLen, sizeof(vidLen));
              std::string vidStr;
@@ -857,9 +878,8 @@ void start_program() {
              if (vidLen > 0) {
                  file.read(&vidStr[0], vidLen);
              }
-             dc->Vid = vidStr; // Поле Vid публичное в твоем новом хедере, пишем напрямую
+             dc->Vid = vidStr; 
 
-             // 7. Добавляем полностью восстановленный девайс пользователю
              user.AddWatch(dc);
          }
      }

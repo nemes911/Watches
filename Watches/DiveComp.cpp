@@ -4,7 +4,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
-#include <algorithm> // Для std::min и std::max
+#include <algorithm> 
 #include "conio.h"
 
 using namespace std;
@@ -12,7 +12,6 @@ using namespace std;
 int DiveComp::count = 0;
 int DiveComp::nextid = 0;
 
-// ================= ГЕТТЕРЫ И СЕТТЕРЫ =================
 
 void DiveComp::SetMix(std::string& Mix) {
     this->Mix = Mix;
@@ -46,9 +45,9 @@ int DiveComp::GetAll() {
     return count;
 }
 
-// ================= КОНСТРУКТОРЫ И ДЕСТРУКТОР =================
 
-// Конструктор по умолчанию с безопасной инициализацией всех полей
+
+
 DiveComp::DiveComp()
     : Vid("Recreational"), Mix("Air"), Count(0), TimeCicle(0), NumberDives(0),
     Temp(20), CurDepth(0), MaxDepth(0), DiveTime(0)
@@ -57,7 +56,7 @@ DiveComp::DiveComp()
     count++;
 }
 
-// Конструктор с параметрами через список инициализации
+
 DiveComp::DiveComp(std::string Vid, int Count, int TimeCicle, int NumberDivers, int Temp, int CurDepth, std::string Mix)
     : Vid(Vid), Count(Count), TimeCicle(TimeCicle), NumberDives(NumberDivers),
     Temp(Temp), CurDepth(CurDepth), MaxDepth(CurDepth), DiveTime(0), Mix(Mix)
@@ -69,13 +68,12 @@ DiveComp::DiveComp(std::string Vid, int Count, int TimeCicle, int NumberDivers, 
 
 DiveComp::~DiveComp() {
     count--;
-    // Так как мы убрали char*, здесь больше нет риска утечки памяти, 
-    // деструктор автоматически очистит std::string!
+    
 }
 
 // ================= ОПЕРАТОРЫ И УПРАВЛЕНИЕ ПОГРУЖЕНИЕМ =================
 
-// Постфиксный декремент (копирование std::string теперь абсолютно безопасно)
+
 DiveComp DiveComp::operator--(int) {
     DiveComp temp = *this;
     if (CurDepth > 0) {
@@ -84,12 +82,12 @@ DiveComp DiveComp::operator--(int) {
     return temp;
 }
 
-// Префиксный декремент
+
 DiveComp& DiveComp::operator--() {
     if (CurDepth > 0) {
         CurDepth--;
         DiveTime += 1;
-        Time = AddMinutesToTime(Time, 1);        // ← +1 минута
+        Time = AddMinutesToTime(Time, 1);     
     }
     return *this;
 }
@@ -115,11 +113,11 @@ bool DiveComp::Ascend(int meters)
     int oldDepth = CurDepth;
     CurDepth = std::max(0, CurDepth - meters);
 
-    // Расчёт времени: +2 минуты за каждые 5 метров
+
     int timeAdded = ((meters + 4) / 5) * 2;
     DiveTime += timeAdded;
 
-    Time = AddMinutesToTime(Time, timeAdded);   // ← обновляем время
+    Time = AddMinutesToTime(Time, timeAdded);   
 
     if (CurDepth == 0) {
         std::cout << ">>> Успешно всплыли на поверхность <<<\n";
@@ -135,7 +133,7 @@ bool DiveComp::Ascend(int meters)
 
 void DiveComp::Stay(int minutes) {
     DiveTime += minutes;
-    Time = AddMinutesToTime(Time, minutes);     // ← обновляем текущее время
+    Time = AddMinutesToTime(Time, minutes);     
 
     std::cout << "Пребывание на глубине " << minutes << " минут...\n";
     AddLog("Stayed " + std::to_string(minutes) + " min at " + std::to_string(CurDepth) + "m");
@@ -146,12 +144,12 @@ void DiveComp::Stay(int minutes) {
 void DiveComp::PrintStatus() const
 {
     std::cout << "\n=== DiveComp Status ===\n";
-    std::cout << "Время: " << Time << "\n"; // Поле Time унаследовано от базового класса
+    std::cout << "Время: " << Time << "\n"; 
     std::cout << "Глубина: " << CurDepth << " / " << MaxDepth << " м\n";
     std::cout << "Время под водой: " << DiveTime << " мин\n";
     std::cout << "Температура: " << Temp << "°C\n";
 
-    // Вместо тернарного оператора с указателями проверяем на пустоту строки
+
     std::cout << "Смесь: " << (Mix.empty() ? "Air" : Mix) << "\n";
     std::cout << "Режим: " << (Vid.empty() ? "Recreational" : Vid) << "\n";
     std::cout << "========================\n";
@@ -185,7 +183,6 @@ void DiveComp::Calculate() {
         cout << "WARNING: Cold water\n";
     }
 
-    // Заменили устаревший strcmp на красивое и безопасное сравнение строк '=='
     if ((Mix == "air" || Mix == "Air") && CurDepth > 30) {
         cout << "WARNING: Air not safe deeper than 30m\n";
     }

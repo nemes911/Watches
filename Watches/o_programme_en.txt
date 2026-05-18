@@ -1,6 +1,37 @@
-fsafasdfdaf
-dsg
+=== O PROGRAMME ===
+=== ABOUT THE PROGRAM ===
 
-sdg
-sg
-sdg	
+"Object-Oriented Watches System" is a course project developed 
+as part of the "Object-Oriented Programming" discipline.
+
+### Project Concept:
+A simulator of smart watches with several real-life scenarios:
+- Flights and time zone changes
+- Underwater diving (basic and advanced)
+
+### Implemented Classes:
+• Watcher — base class for all watch types
+• GTMWatches — watches with multiple time zones support
+• DivingWatches — basic diving watches with bezel
+• DiveComp — advanced dive computer
+• User — user system with session saving
+
+### Main Features:
+• Flight simulation with time and time zone changes
+• Simple and professional underwater diving
+• Accurate calculation of ascent and bottom time
+• Save/Load session system
+• Multilingual interface (Russian / English)
+• File operations and logging
+
+### Technologies:
+- Language: C++
+- Approach: Object-Oriented Programming
+- Polymorphism, Inheritance, Encapsulation
+- File handling (text and binary)
+
+Developed at Donetsk National Technical University  
+Faculty of FISP, Department of Software Engineering  
+2025
+
+Thank you for using the program!

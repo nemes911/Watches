@@ -127,7 +127,6 @@
     <ClInclude Include="DivingWatches.h" />
     <ClInclude Include="GTMWatches.h" />
     <ClInclude Include="Logical.h" />
-    <ClInclude Include="Menu.h" />
     <ClInclude Include="Temp.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="Watcher.h" />
