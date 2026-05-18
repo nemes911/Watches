@@ -14,9 +14,12 @@ void loadLanguage(string filename);
 void LoadConfig();
 void saveConfig();
 
+void mainMenu_();
 void mainMenu();
 void DisplayMenuUntilMarker(const string& path, string& markerLine);
 void settingsMenu();
+
+std::string AddMinutesToTime(const std::string& currentTime, int minutes);
 
 void DisplaySection(const std::string& path, const std::string& startMarker = "", const std::string& endMarker = "");
 std::string GetLang(const std::string& key);

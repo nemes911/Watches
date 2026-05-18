@@ -1,55 +1,66 @@
-Main menu
+=== MAIN MENU ===
+=== Main Menu ===
+1. New Scenario (Start)
+2. About the Author
+3. User Guide
+4. About the Program
+5. Settings
+6. Load Session
+7. Exit the Program
+=== END MAIN MENU ===
 
-1. About program
-2. Manual
-3. About author
-4. Settings
-5. Exit
+=== SCENARIOS ===
+Select a scenario:
+1. Flight / Time Zone Change
+2. Basic Dive
+3. Dive Computer (Detailed Dive)
+=== END SCENARIOS ===
 
+=== DIVE_CONTROL ===
+Dive Control:
+1. Stay at Depth (15 min)
+2. Ascend to 1 Meter
+3. Ascend to 5 Meters
+4. Emergency Ascent
+5. End Dive
+=== END DIVE_CONTROL ===
 
-Want do import file? y\n
-
-
-
-Make path to logs file
-
-
-Set the time:
-Watch type (1 - digital, 0 - mechanical):
-Digital or mechanical:
-Maximum depth:
-Bezel:
-
-=== Dive Computer Scenario ===
-Current time (HH:MM):
-Maximum dive depth (m):
-Water temperature (°C):
-Dive started!
-
-=== Controls ===
-1. Stay at depth (15 min):
-2. Ascend 1 meter (--):
-3. Ascend 5 meters:
-4. Emergency ascent:
-5. End dive:
-Choice:
-
-
-
-=== Flight / Time Zone Change Scenario ===
-Enter current local time (HH:MM):
-Enter current GMT offset (e.g. +3):
-Enter current time zone name (e.g. Moscow):
-Flight duration in minutes (or hours*60):
-Destination time zone (name):
-Destination GMT offset:
-
-=== Flight started ===
-
-=== Flight Control ===
-1. Simulate a 30-minute flight
-2. Simulate a 1-hour flight
+=== FLIGHT_CONTROL ===
+Flight Controls:
+1. Simulate 30 minutes of flight
+2. Simulate 1 hour of flight
 3. Change time zone (stopover)
 4. Arrive at destination
-5. Complete scenario
-Choice:
+5. End scenario
+=== END FLIGHT_CONTROL ===
+
+=== MAKE USER ===
+1. Enter Name
+2. Enter GTM
+3. Enter Geographical Location
+=== END USER ===
+
+=== MAKE FLIGHT ===
+=== New Flight ===
+Enter local departure time (e.g. 2:30 PM):
+Enter current GTM (offset):
+Enter time zone name (e.g. MSK):
+Enter flight duration in minutes:
+Enter destination (zone name):
+Enter destination GTM:
+=== END FLIGHT ===
+
+=== DIVE COMP ===
+=== Dive Computer ===
+Enter dive start time (HH:MM):
+Enter maximum depth (meters):
+Enter water temperature (°C):
+=== END DIVE COMP ===
+
+=== MAKE DIVE ===
+=== Create a Simple Dive ===
+Enter dive start time (HH:MM):
+Enter maximum depth (meters):
+Enter bezel value (minutes):
+Enter watch type (1 - Professional, 0 - Regular):
+=== END DIVE ===

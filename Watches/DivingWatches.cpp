@@ -27,16 +27,28 @@ int DivingWatches::GetBezel() {
 }
 
 void DivingWatches::BeginTheUnderwater() {
+	if (Time.empty()) {
+		std::cout << "Ошибка: время не задано!\n";
+		return;
+	}
+
 	Bezel = ExtractMinutes(Time);
-	cout << "Начало погружения\n";
+
+	std::cout << "=== Погружение начато ===\n";
+	std::cout << "Время старта: " << Time << "\n";
+
+	// Автоматический спуск на заданную глубину
+	if (Depth > 0) {
+		DescentToDepth(Depth);
+	}
 }
 
 int DivingWatches::GetDiveDuration(string currentTime) {
+	if (currentTime.empty()) return 0;
+
 	int start = Bezel;
 	int now = ExtractMinutes(currentTime);
-
 	int duration = now - start;
-
 	if (duration < 0) duration += 60;
 
 	return duration;
@@ -47,13 +59,22 @@ int DivingWatches::ExtractMinutes(const std::string& time) {
 	return stoi(time.substr(3, 2));
 }
 
+std::string DivingWatches::GetCurrentTime() const {
+	return Time;
+}
+
 int DivingWatches::GetDiveTime() {
-	int current = ExtractMinutes(Time);
-	int diff = current - Bezel;
+	if (Time.empty() || Bezel == 0)
+		return 0;
 
-	if (diff < 0) diff += 60; 
+	int currentMinutes = ExtractMinutes(Time);
+	int startMinutes = Bezel;
 
-	return diff;
+	int duration = currentMinutes - startMinutes;
+	if (duration < 0) duration += 60;   // если перешли через час
+
+
+	return duration;
 }
 
 DivingWatches::DivingWatches() { id = GetNextWatchId();  count++; }
@@ -106,4 +127,60 @@ void DivingWatches::CtreatedDivingWatches(const DivingWatches& w) {
 	catch (exception& e) {
 		cout << "Critical error: " << e.what() << endl;
 	}
+}
+
+void DivingWatches::AddDiveTime(int minutes) {
+	if (minutes <= 0) return;
+
+	// Обновляем строку времени
+	Time = AddMinutesToTime(Time, minutes);
+
+	std::cout << "Прошло " << minutes << " минут под водой. Текущее время: " << Time << "\n";
+}
+
+// Расчёт времени в зависимости от глубины (примерная модель)
+int DivingWatches::CalculateTimeByDepth(int depth) const
+{
+	if (depth <= 0) return 0;
+
+
+	if (depth <= 20)
+		return (depth / 5) * 1 + (depth % 5 != 0 ? 1 : 0);
+	else if (depth <= 40)
+		return (depth / 5) * 2;
+	else
+		return (depth / 5) * 3;   // глубокие погружения
+}
+
+// Спуск на глубину
+void DivingWatches::DescentToDepth(int targetDepth)
+{
+	if (targetDepth <= 0) return;
+
+	int timeAdded = CalculateTimeByDepth(targetDepth);
+
+	Depth = targetDepth;
+	Time = AddMinutesToTime(Time, timeAdded);
+
+	std::cout << "Спуск на " << targetDepth << " метров...\n";
+	std::cout << "Затрачено времени: +" << timeAdded << " минут\n";
+	std::cout << "Текущее время: " << Time << "\n";
+}
+
+// Всплытие
+void DivingWatches::AscendFromDepth(int meters)
+{
+	if (meters <= 0 || Depth == 0) {
+		std::cout << "Вы уже на поверхности.\n";
+		return;
+	}
+
+	int timeAdded = (meters / 5) * 2 + (meters % 5 != 0 ? 1 : 0); // всплытие обычно быстрее
+
+	Depth = std::max(0, Depth - meters);
+	Time = AddMinutesToTime(Time, timeAdded);
+
+	std::cout << "Всплытие на " << meters << " метров...\n";
+	std::cout << "Затрачено времени: +" << timeAdded << " минут\n";
+	std::cout << "Текущая глубина: " << Depth << " м | Время: " << Time << "\n";
 }

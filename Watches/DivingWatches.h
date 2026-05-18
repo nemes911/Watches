@@ -5,11 +5,16 @@
 #pragma once
 class DivingWatches : public Watcher
 {
-public:
-	std::string Time;
+protected:
+	
 	bool Type;
 	int Depth;
 	int Bezel;
+public:
+	
+
+	
+	std::string Time;
 	static int nextid;
 	static int count;
 
@@ -31,6 +36,8 @@ public:
 
 	int GetDiveTime();
 
+	std::string GetCurrentTime() const;
+
 	DivingWatches();
 
 	DivingWatches(std::string Time, bool Type, int Depth, int Bezel);
@@ -44,5 +51,11 @@ public:
 	void Print() override;
 
 	void CtreatedDivingWatches(const DivingWatches& w);
+
+	void AddDiveTime(int minutes);
+
+	void DescentToDepth(int targetDepth);   // Спуск на заданную глубину
+	void AscendFromDepth(int meters);       // Всплытие
+	int CalculateTimeByDepth(int depth) const;
 };
 

@@ -101,5 +101,11 @@
     <Text Include="Watches.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
+    <Text Include="zastavka_ru.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="zastavka_en.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -83,11 +83,23 @@ void GTMWatches::Print() {
 }
 
 void GTMWatches::StartFlight(int durationMinutes) {
-	FlightTime = durationMinutes;
-	OriginalOffset = GTMOffset;
-	std::cout << "\n=== Полёт начат! Продолжительность: "
-		<< durationMinutes << " минут ("
-		<< durationMinutes / 60 << " ч " << durationMinutes % 60 << " мин) ===\n";
+	if (durationMinutes <= 0)
+    {
+        std::cout << "Ошибка: продолжительность полёта должна быть больше 0.\n";
+        return;
+    }
+
+    FlightTime = durationMinutes;      // Общая продолжительность полёта
+    OriginalOffset = GTMOffset;        // Запоминаем исходный пояс
+
+    std::cout << "\n=== Полёт успешно начат ===\n";
+    std::cout << "Продолжительность: " << durationMinutes << " минут ("
+              << durationMinutes / 60 << " ч " << durationMinutes % 60 << " мин)\n";
+    std::cout << "Отправление: " << Time << " | " 
+              << " (GMT" << (GTMOffset >= 0 ? "+" : "") << GTMOffset << ")\n";
+    
+    // Можно добавить небольшую паузу или разделитель
+    std::cout << std::string(50, '-') << "\n";
 }
 
 void GTMWatches::ChangeTimezone(int newOffset, std::string newZoneName) {

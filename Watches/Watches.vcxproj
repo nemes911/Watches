@@ -157,6 +157,8 @@
     <Text Include="rykovodstvo_ru.txt" />
     <Text Include="User.txt" />
     <Text Include="Watches.txt" />
+    <Text Include="zastavka_en.txt" />
+    <Text Include="zastavka_ru.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

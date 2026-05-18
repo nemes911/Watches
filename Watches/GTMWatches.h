@@ -4,14 +4,19 @@
 class GTMWatches :
     public Watcher
 {
-public:
-    std::string SecondTime;
+private:
+
     int GTMOffset;
     std::string SecondZoneName;
+public:
+    
+    
+   
     static int count;
     static int nextid;
     int FlightTime = 0;
     int OriginalOffset;
+    std::string SecondTime;
     static int GetCount();
     void SetSecondTime(std::string SecondZoneName);
     std::string GetSecondZoneName();

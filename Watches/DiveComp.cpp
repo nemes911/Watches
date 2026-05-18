@@ -1,9 +1,10 @@
-#include "DiveComp.h"
+﻿#include "DiveComp.h"
 #include <fstream>
 #include "Logical.h"
-#include "iostream"
+#include <iostream>
 #include <iomanip>
 #include <string>
+#include <algorithm> // Для std::min и std::max
 #include "conio.h"
 
 using namespace std;
@@ -11,196 +12,233 @@ using namespace std;
 int DiveComp::count = 0;
 int DiveComp::nextid = 0;
 
-void DiveComp::SetMix(char* Mix) {
-	this->Mix = Mix;
+// ================= ГЕТТЕРЫ И СЕТТЕРЫ =================
+
+void DiveComp::SetMix(std::string& Mix) {
+    this->Mix = Mix;
 }
 
-int DiveComp::GetCount() {
-	return count;
-}
-
-char* DiveComp::GetMix() {
-	return this->Mix;
+std::string DiveComp::GetMix() {
+    return this->Mix;
 }
 
 int DiveComp::GetTemp() {
-	return this->Temp;
+    return this->Temp;
 }
 
 void DiveComp::SetTemp(int Temp) {
-	this->Temp = Temp;
-}
-
-DiveComp::DiveComp() { id = GetNextWatchId();  count++; }
-DiveComp::DiveComp(char* Vid, int Count, int TimeCicle, int NumberDivers, int Temp, int CurDepth, char* Mix) 
-	: Vid(Vid), Count(Count), TimeCicle(TimeCicle), NumberDives(NumberDivers), Temp(Temp), CurDepth(CurDepth), Mix(Mix)
-{
-	id = GetNextWatchId();
-	count++;
-	MaxDepth = CurDepth;
-	CreateDiveComp(*this);
-}
-
-DiveComp::~DiveComp() { count--; }
-
-DiveComp DiveComp::operator--(int) {
-	DiveComp temp = *this;
-	if (CurDepth > 0) {
-		CurDepth--;
-	}
-	return temp;
-}
-
-DiveComp& DiveComp::operator--() {
-	if (CurDepth > 0) {
-		CurDepth--;
-		DiveTime += 1;
-	}
-	return *this;
-}
-
-int DiveComp::GetAll() {
-	return count;
-}
-
-void DiveComp::StartDescent() {
-	std::cout << "\n=== ���������� ����� ===\n";
-	while (CurDepth < MaxDepth) {
-		CurDepth += std::min(5, MaxDepth - CurDepth);
-		std::cout << "�������: " << CurDepth << " �\n";
-		AddLog("Desecent to" + std::to_string(CurDepth) + "m");
-	}
-	std::cout << "���������� ������������ �������!\n";
-}
-
-bool DiveComp::Ascend(int meters) {
-	if (CurDepth == 0) {
-		std::cout << "�� ��� �� �����������!\n";
-		return false;
-	}
-	CurDepth = std::max(0, CurDepth - meters);
-	DiveTime += 2;                     
-
-	if (CurDepth == 0)
-		std::cout << ">>> ������� �� ����������� <<<\n";
-	else
-		std::cout << "��������. ������� �������: " << CurDepth << " �\n";
-
-	AddLog("Ascended to " + std::to_string(CurDepth) + "m");
-	return true;
-}
-
-void DiveComp::Stay(int minutes) {
-	DiveTime += minutes;
-	std::cout << "���������� �� ������� " << minutes << " �����...\n";
-	AddLog("Stayed " + std::to_string(minutes) + " min at " + std::to_string(CurDepth) + "m");
-}
-
-void DiveComp::PrintStatus() const
-{
-	std::cout << "\n=== DiveComp Status ===\n";
-	std::cout << "�����: " << Time << "\n";
-	std::cout << "�������: " << CurDepth << " / " << MaxDepth << " �\n";
-	std::cout << "����� ��� �����: " << DiveTime << " ���\n";
-	std::cout << "�����������: " << Temp << "�C\n";
-	std::cout << "�����: " << (Mix ? Mix : "Air") << "\n";
-	std::cout << "�����: " << (Vid ? Vid : "Recreational") << "\n";
-	std::cout << "========================\n";
+    this->Temp = Temp;
 }
 
 void DiveComp::SetMaxDepth(int depth) {
-	this->MaxDepth = depth;
+    this->MaxDepth = depth;
 }
 
-int DiveComp::GetMaxDepth() const{
-	return this->MaxDepth;
+int DiveComp::GetMaxDepth() const {
+    return this->MaxDepth;
 }
 
-void DiveComp::Save() {
-	ofstream file("Watches.txt", ios::app);
+int DiveComp::GetCount() {
+    return count;
+}
 
-	file << id << "|"
-		<< user_id << "|"
-		<< "DiveComp" << "|"
-		<< Vid << "|"
-		<< Count << "|"
-		<< TimeCicle << "|"
-		<< NumberDives << "|"
-		<< Temp << "|"
-		<< CurDepth << "|"
-		<< Mix << "|"
-		<< endl;
+int DiveComp::GetAll() {
+    return count;
+}
+
+// ================= КОНСТРУКТОРЫ И ДЕСТРУКТОР =================
+
+// Конструктор по умолчанию с безопасной инициализацией всех полей
+DiveComp::DiveComp()
+    : Vid("Recreational"), Mix("Air"), Count(0), TimeCicle(0), NumberDives(0),
+    Temp(20), CurDepth(0), MaxDepth(0), DiveTime(0)
+{
+    id = GetNextWatchId();
+    count++;
+}
+
+// Конструктор с параметрами через список инициализации
+DiveComp::DiveComp(std::string Vid, int Count, int TimeCicle, int NumberDivers, int Temp, int CurDepth, std::string Mix)
+    : Vid(Vid), Count(Count), TimeCicle(TimeCicle), NumberDives(NumberDivers),
+    Temp(Temp), CurDepth(CurDepth), MaxDepth(CurDepth), DiveTime(0), Mix(Mix)
+{
+    id = GetNextWatchId();
+    count++;
+    CreateDiveComp(*this);
+}
+
+DiveComp::~DiveComp() {
+    count--;
+    // Так как мы убрали char*, здесь больше нет риска утечки памяти, 
+    // деструктор автоматически очистит std::string!
+}
+
+// ================= ОПЕРАТОРЫ И УПРАВЛЕНИЕ ПОГРУЖЕНИЕМ =================
+
+// Постфиксный декремент (копирование std::string теперь абсолютно безопасно)
+DiveComp DiveComp::operator--(int) {
+    DiveComp temp = *this;
+    if (CurDepth > 0) {
+        CurDepth--;
+    }
+    return temp;
+}
+
+// Префиксный декремент
+DiveComp& DiveComp::operator--() {
+    if (CurDepth > 0) {
+        CurDepth--;
+        DiveTime += 1;
+        Time = AddMinutesToTime(Time, 1);        // ← +1 минута
+    }
+    return *this;
+}
+
+
+void DiveComp::StartDescent() {
+    std::cout << "\n=== Начинается спуск ===\n";
+    while (CurDepth < MaxDepth) {
+        CurDepth += std::min(5, MaxDepth - CurDepth);
+        std::cout << "Глубина: " << CurDepth << " м\n";
+        AddLog("Descent to " + std::to_string(CurDepth) + "m");
+    }
+    std::cout << "Достигнута максимальная глубина!\n";
+}
+
+bool DiveComp::Ascend(int meters)
+{
+    if (CurDepth == 0) {
+        std::cout << "Вы уже на поверхности!\n";
+        return false;
+    }
+
+    int oldDepth = CurDepth;
+    CurDepth = std::max(0, CurDepth - meters);
+
+    // Расчёт времени: +2 минуты за каждые 5 метров
+    int timeAdded = ((meters + 4) / 5) * 2;
+    DiveTime += timeAdded;
+
+    Time = AddMinutesToTime(Time, timeAdded);   // ← обновляем время
+
+    if (CurDepth == 0) {
+        std::cout << ">>> Успешно всплыли на поверхность <<<\n";
+    }
+    else {
+        std::cout << "Всплытие на " << meters << " м → Глубина: "
+            << CurDepth << " м (+ " << timeAdded << " мин)\n";
+    }
+
+    AddLog("Ascended " + std::to_string(meters) + "m");
+    return true;
+}
+
+void DiveComp::Stay(int minutes) {
+    DiveTime += minutes;
+    Time = AddMinutesToTime(Time, minutes);     // ← обновляем текущее время
+
+    std::cout << "Пребывание на глубине " << minutes << " минут...\n";
+    AddLog("Stayed " + std::to_string(minutes) + " min at " + std::to_string(CurDepth) + "m");
+}
+
+// ================= АНАЛИЗ И ВЫВОД ДАННЫХ =================
+
+void DiveComp::PrintStatus() const
+{
+    std::cout << "\n=== DiveComp Status ===\n";
+    std::cout << "Время: " << Time << "\n"; // Поле Time унаследовано от базового класса
+    std::cout << "Глубина: " << CurDepth << " / " << MaxDepth << " м\n";
+    std::cout << "Время под водой: " << DiveTime << " мин\n";
+    std::cout << "Температура: " << Temp << "°C\n";
+
+    // Вместо тернарного оператора с указателями проверяем на пустоту строки
+    std::cout << "Смесь: " << (Mix.empty() ? "Air" : Mix) << "\n";
+    std::cout << "Режим: " << (Vid.empty() ? "Recreational" : Vid) << "\n";
+    std::cout << "========================\n";
 }
 
 void DiveComp::Calculate() {
+    cout << "\n=== Dive Analysis ===\n";
+    cout << "Mode: " << Vid << endl;
+    cout << "Depth: " << CurDepth << " m\n";
+    cout << "Temperature: " << Temp << " C\n";
+    cout << "Gas mix: " << Mix << endl;
 
+    PrintStatus();
 
+    if (CurDepth > 40)
+        std::cout << "ВНИМАНИЕ: Большая глубина!\n";
+    if (Temp < 10)
+        std::cout << "ВНИМАНИЕ: Холодная вода!\n";
 
-	cout << "\n=== Dive Analysis ===\n";
+    if (CurDepth <= 20) {
+        cout << "Safe recreational depth\n";
+    }
+    else if (CurDepth <= 40) {
+        cout << "Medium depth - caution required\n";
+    }
+    else {
+        cout << "DANGER: deep dive!\n";
+    }
 
-	cout << "Mode: " << Vid << endl;
-	cout << "Depth: " << CurDepth << " m\n";
-	cout << "Temperature: " << Temp << " C\n";
-	cout << "Gas mix: " << Mix << endl;
+    if (Temp < 10) {
+        cout << "WARNING: Cold water\n";
+    }
 
-	PrintStatus();
+    // Заменили устаревший strcmp на красивое и безопасное сравнение строк '=='
+    if ((Mix == "air" || Mix == "Air") && CurDepth > 30) {
+        cout << "WARNING: Air not safe deeper than 30m\n";
+    }
+    else if (Mix == "nitrox" || Mix == "Nitrox") {
+        cout << "Nitrox allows longer bottom time\n";
+    }
+    else if (Mix == "trimix" || Mix == "Trimix") {
+        cout << "Trimix suitable for deep diving\n";
+    }
 
-	if (CurDepth > 40)
-		std::cout << "��������: ������� �������!\n";
-	if (Temp < 10)
-		std::cout << "��������: �������� ����!\n";
+    if (Vid == "freediving" || Vid == "Freediving") {
+        cout << "Freediving mode: short dive expected\n";
+    }
+    else if (Vid == "technical" || Vid == "Technical") {
+        cout << "Technical diving: decompression required\n";
+    }
 
-	
-	if (CurDepth <= 20) {
-		cout << "Safe recreational depth\n";
-	}
-	else if (CurDepth <= 40) {
-		cout << "Medium depth - caution required\n";
-	}
-	else {
-		cout << "DANGER: deep dive!\n";
-	}
+    cout << "=====================\n";
+}
 
-	
-	if (Temp < 10) {
-		cout << "WARNING: Cold water\n";
-	}
+// ================= СОХРАНЕНИЕ В ФАЙЛЫ =================
 
-	
-	if (strcmp(Mix, "air") == 0 && CurDepth > 30) {
-		cout << "WARNING: Air not safe deeper than 30m\n";
-	}
-	else if (strcmp(Mix, "nitrox") == 0) {
-		cout << "Nitrox allows longer bottom time\n";
-	}
-	else if (strcmp(Mix, "trimix") == 0) {
-		cout << "Trimix suitable for deep diving\n";
-	}
+void DiveComp::Save() {
+    ofstream file("Watches.txt", ios::app);
+    if (!file.is_open()) return;
 
-	
-	if (strcmp(Vid, "freediving") == 0) {
-		cout << "Freediving mode: short dive expected\n";
-	}
-	else if (strcmp(Vid, "technical") == 0) {
-		cout << "Technical diving: decompression required\n";
-	}
-
-	cout << "=====================\n";
+    file << id << "|"
+        << user_id << "|"
+        << "DiveComp" << "|"
+        << Vid << "|"
+        << Count << "|"
+        << TimeCicle << "|"
+        << NumberDives << "|"
+        << Temp << "|"
+        << CurDepth << "|"
+        << Mix << "|"
+        << endl;
 }
 
 void DiveComp::CreateDiveComp(const DiveComp& d) {
-	try {
-		ofstream file("DiveComp.txt", ios::app);
-		file << d.Vid << "|"
-			<< d.Count << "|"
-			<< d.TimeCicle << "|"
-			<< d.NumberDives << "|"
-			<< d.Temp << "|"
-			<< d.CurDepth << "|"
-			<< d.Mix << std::endl;
-			
-	}
-	catch (exception& e) {
+    try {
+        ofstream file("DiveComp.txt", ios::app);
+        if (!file.is_open()) return;
 
-	}
+        file << d.Vid << "|"
+            << d.Count << "|"
+            << d.TimeCicle << "|"
+            << d.NumberDives << "|"
+            << d.Temp << "|"
+            << d.CurDepth << "|"
+            << d.Mix << std::endl;
+    }
+    catch (const exception& e) {
+        cerr << "Ошибка сохранения лога DiveComp: " << e.what() << endl;
+    }
 }

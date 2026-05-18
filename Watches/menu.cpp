@@ -9,6 +9,8 @@
 #include "DiveComp.h"
 #include "DivingWatches.h"
 #include "GTMWatches.h"
+#include <sstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -16,6 +18,7 @@ map<string, string> lang;
 map<string, string> config;
 
 std::string logPath = "logs.txt";
+std::string zastavka_path = "zastavka_ru.txt";
 
 // ================= FILE DISPLAY =================
 void Display(const string& path) {
@@ -34,25 +37,48 @@ void DisplaySection(const std::string& path, const std::string& startMarker, con
 {
     std::ifstream file(path);
     if (!file.is_open()) {
-        std::cout << GetLang("ERROR_FILE") << std::endl;
+        std::cout << GetLang("ERROR_FILE") << ": " << path << std::endl;
         return;
     }
 
     std::string line;
     bool printing = startMarker.empty();
 
-    while (getline(file, line)) {
-        if (!startMarker.empty() && line.find(startMarker) != std::string::npos) {
-            printing = true;
-            continue;
+    while (getline(file, line))
+    {
+        // Убираем \r для Windows-файлов
+        if (!line.empty() && line.back() == '\r') {
+            line.pop_back();
         }
-        if (printing) {
-            if (!endMarker.empty() && line.find(endMarker) != std::string::npos) {
-                break;
-            }
+
+        // === Начало секции ===
+        if (!startMarker.empty() && line.find(startMarker) != std::string::npos)
+        {
+            printing = true;
+            continue; // пропускаем строку с маркером
+        }
+
+        if (!printing) continue;
+
+        // === Конец секции ===
+        if (!endMarker.empty() && line.find(endMarker) != std::string::npos)
+        {
+            break;
+        }
+
+        // === Главное изменение: пропускаем ВСЕ строки с "===" (маркеры) ===
+        if (line.find("===") != std::string::npos)
+        {
+            continue;   // не выводим ни английские, ни русские маркеры
+        }
+
+        // Если строка не пустая после очистки — выводим
+        if (!line.empty()) {
             std::cout << line << std::endl;
         }
     }
+
+    file.close();
 }
 
 
@@ -147,8 +173,67 @@ void settingsMenu() {
     saveConfig();
 }
 
+// ================= MAIN MENU_ =================
+void mainMenu_() {
+    int choice;
+    while (true) {
+        system("cls");
+        string langCode = config["language"];
+        DisplaySection("menu_" + langCode + ".txt", "=== MAIN MENU ===", "=== END MAIN MENU ===");
+        PrintLang("Выберите пункт");
+        cin >> choice;
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            PrintLang("ERROR_INPUT");
+            system("pause");
+            continue;
+        }
+        if (choice == 1) {
+            system("cls");
+
+            User user("", 0, "");
+
+            // Выводим красивые подсказки из файла
+            DisplaySection("menu_" + langCode + ".txt", "=== MAKE USER ===", "=== END USER ===");
+
+            // Сам ввод данных
+            cout << "\nВаш выбор: ";
+            getline(cin >> ws, user.name);           
+
+            cout << "\nВведите GTM (смещение): ";
+            cin >> user.GTM;
+
+            cin.ignore(); 
+            cout << "\nВведите географическое положение: ";
+            getline(cin, user.Geografy);
+
+            cout << "\nПользователь успешно создан!\n\n";
+            user.PrintWatches();
 
 
+            DisplaySection("menu_" + langCode + ".txt", "=== SCENARIOS ===", "=== END SCENARIOS ===");
+
+            int scen;
+            PrintLang("Выбирите сценарий");
+            cin >> scen;
+            switch (scen) {
+            case 1: FlightScenario(user); break;
+            case 2: SwimingScenaries(user); break;
+            case 3: DiveScenario(user); break;
+            default: PrintLang("ERROR_INVALID_CHOICE"); break;
+            }
+
+            SaveSession(user);
+            system("pause");
+
+        }
+        else if (choice == 2) {
+
+        }
+    }
+}
 // ================= MAIN MENU =================
 void mainMenu()
 {
@@ -249,8 +334,8 @@ void start_program() {
         loadLanguage(langFile);
 
         zastavka_();
-
-        mainMenu();
+        mainMenu_();
+        //mainMenu();
     }
     catch (exception& e) {
         cout << "Critical error: " << e.what() << endl;
@@ -298,151 +383,156 @@ void start_program() {
 // ================= ZASTAVKA =================
  void zastavka_()
  {
+   system("cls");
+
+     std::ifstream fin("zastavka_ru.txt");
+     if (!fin.is_open())
+     {
+         std::cout << "Не удалось открыть zastavka_ru.txt\n";
+         
+         return;
+     }
+
+     // Выводим весь файл
+     std::string line;
+     while (std::getline(fin, line))
+     {
+         std::cout << line << std::endl;
+     }
+
+     fin.close();        // закрываем файл сразу
+
+     // Ждём нажатия клавиши
      while (true)
      {
-         system("cls");
+         int key = _getch();
 
-         // Можно вынести шапку университета в lang-файл, но оставим как есть для красоты
-         cout << "\tДонецкий Национальный Технический Университет\n";
-         cout << "Факультет ФИСП\n";
-         cout << "Кафедра ПИ\n\n\n";
-         cout << "\tКурсовой проект\n";
-         cout << "\tпо дисциплине: \"ООП\"\n";
-         cout << "\tна тему: \"Система Часы\"\n\n";
-
-         PrintLang("ZASTAVKA_START ENTER");           // "Начать: ENTER"
-         PrintLang("ZASTAVKA_CHANGE_LANG L");     // "Сменить язык: L"
-         PrintLang("ZASTAVKA_EXIT ESC");            // "Выход: ESC"
-         PrintLang("ZASTAVKA_AUTHOR A");          // "Об авторе: A"
-         PrintLang("ZASTAVKA_MANUAL S");          // "Руководство: S"
-         PrintLang("ZASTAVKA_ABOUT O");           // "О программе: O"
-
-         char ch = _getch();
-         string langCode = config["language"];
-
-         if (ch == 13)                  // ENTER
+         if (key == 13)                    // ENTER — начать
          {
-             return;
+             system("cls");
+             return;                       // выходим из заставки
          }
-         else if (ch == 27)             // ESC
+         else if (key == 9)                // TAB — смена языка
+         {
+             // TODO: смена языка
+             continue;
+         }
+         else if (key == 27)               // ESC — выход
          {
              exit(0);
          }
-         else if (ch == 'a' || ch == 'A')
+         else if (key == 'a' || key == 'A')
          {
-             Display("author_" + langCode + ".txt");
-             system("pause");
+             // TODO: Об авторе
+             continue;
          }
-         else if (ch == 's' || ch == 'S')
+         else if (key == 's' || key == 'S')
          {
-             Display("rykovodstvo_" + langCode + ".txt");
-             system("pause");
+             // TODO: Руководство оператора
+             continue;
          }
-         else if (ch == 'o' || ch == 'O')
+         else if (key == 'd' || key == 'D')
          {
-             Display("o_programme_" + langCode + ".txt");
-             system("pause");
+             // TODO: О программе
+             continue;
          }
-         else if (ch == 'l' || ch == 'L')
-         {
-             string newLang;
-             PrintLang("ENTER_LANG");
-             cin >> newLang;
-
-             try
-             {
-                 loadLanguage("lang_" + newLang + ".txt");
-                 config["language"] = newLang;
-                 saveConfig();
-                 PrintLang("LANGUAGE_CHANGED");
-             }
-             catch (...)
-             {
-                 PrintLang("ERROR_FILE");
-             }
-             system("pause");
-         }
+         // другие клавиши игнорируем
      }
  }
 
  // ================= SWIMING SCENARIES =================
  void SwimingScenaries(User& user)
  {
+     system("cls");
+     
+     DisplaySection("menu_" + config["language"] + ".txt", "=== MAKE DIVE ===", "=== END DIVE ===");
+
      std::string time;
-     PrintLang("ENTER_TIME");
-     cin >> time;
 
-     int typeInput;
-     PrintLang("WATCH_TYPE");
-     cin >> typeInput;
-     bool type = (typeInput == 1);
+     int depth, bezel, typeInput;
+     bool type;
 
-     PrintLang("WATCH_TYPE_CONFIRM");
-     cin >> type;
+     std::cout << "\n> ";
+     getline(cin >> ws, time);
 
-     int depth;
-     PrintLang("MAX_DEPTH");
+     std::cout << "\n";
      cin >> depth;
 
-     int bezel;
-     PrintLang("BEZEL");
+     std::cout << "\n";
      cin >> bezel;
 
+     std::cout << "\n";
+     cin >> typeInput;
+
+     if (typeInput == 1) {
+         type = true;
+     }
+     else {
+         type = false;
+     }
+
      DivingWatches* dive = new DivingWatches(time, type, depth, bezel);
-     dive->CtreatedDivingWatches(*dive);
+
      dive->user_id = user.id;
      dive->BeginTheUnderwater();
      dive->Save();
      user.AddWatch(dive);
 
-     PrintLang("SIMPLE_DIVE_CREATED");
+     std::cout << "\n=== Простое погружение начато ===\n";
      SaveSession(user);
+
+     system("pause"); 
+     
  }
 
  // ================= DIVE SCENARIO =================
  void DiveScenario(User& user)
  {
      system("cls");
-     PrintLang("SCENARIO_DIVE");
+
+     DisplaySection("menu_" + config["language"] + ".txt",
+         "=== DIVE COMP ===", "=== END DIVE COMP ===");
 
      std::string time;
-     PrintLang("DIVE_TIME");
-     cin >> time;
+     int maxDepth = 0;
+     int temp = 0;
 
-     int maxDepth;
-     PrintLang("DIVE_MAX_DEPTH");
+     std::cout << "\n> ";
+     getline(cin >> ws, time);
+
+     std::cout << "\n> ";
      cin >> maxDepth;
 
-     int temp;
-     PrintLang("DIVE_TEMP");
+     std::cout << "\n> ";
      cin >> temp;
 
-     char* mix = (char*)"Air";
-     char* vid = (char*)"Recreational";
+     // Создание объекта
+     DiveComp* dive = new DiveComp("Recreational", 1, 60, 1, temp, 0, "Air");
 
-     DiveComp* dive = new DiveComp(vid, 1, 60, 1, temp, 0, mix);
      dive->Time = time;
-     dive->MaxDepth = maxDepth;
-     dive->CurDepth = 0;
+     dive->SetMaxDepth(maxDepth);
      dive->user_id = user.id;
+
      user.AddWatch(dive);
 
+     std::cout << "\n=== Погружение успешно инициализировано ===\n";
      PrintLang("DIVE_STARTED");
      AddLog("Dive started");
 
      dive->StartDescent();
 
+     // === Цикл управления ===
      bool diving = true;
      while (diving)
      {
+         system("cls");
          dive->PrintStatus();
 
-         // Меню управления из файла menu_xx.txt
          DisplaySection("menu_" + config["language"] + ".txt",
              "=== DIVE_CONTROL ===", "=== END DIVE_CONTROL ===");
 
          int choice;
-         PrintLang("ENTER_CHOICE");
+         std::cout << "\nВаш выбор: ";
          cin >> choice;
 
          switch (choice)
@@ -451,18 +541,18 @@ void start_program() {
              dive->Stay(15);
              break;
          case 2:
-             --(*dive);
+             --(*dive);                    // всплытие на 1 метр
              break;
          case 3:
-             dive->Ascend(5);
+             dive->Ascend(5);              // ← теперь используем улучшенный метод
              break;
-         case 4:
+         case 4: // Аварийное всплытие
              std::cout << "!!! АВАРИЙНОЕ ВСПЛЫТИЕ !!!\n";
              dive->CurDepth = 0;
              diving = false;
              AddLog("Emergency ascent");
              break;
-         case 5:
+         case 5: // Завершить погружение
              if (dive->CurDepth != 0)
                  PrintLang("ERROR_ASCEND_FIRST");
              else
@@ -470,101 +560,67 @@ void start_program() {
              break;
          default:
              PrintLang("ERROR_INVALID_CHOICE");
+             break;
          }
+
+         if (diving)
+             system("pause");
      }
 
      PrintLang("DIVE_FINISHED");
      dive->PrintStatus();
      dive->Save();
+
      AddLog("Dive finished. Total time: " + std::to_string(dive->DiveTime) + " min");
      SaveSession(user);
+
+     std::cout << "\nСценарий погружения завершён.\n";
+     system("pause");
  }
 
  // ================= FLIGHT SCENARIO =================
  void FlightScenario(User& user)
  {
      system("cls");
-     PrintLang("SCENARIO_FLIGHT");
 
+     DisplaySection("menu_" + config["language"] + ".txt",
+         "=== MAKE FLIGHT ===", "=== END FLIGHT ===");
      std::string time;
-     PrintLang("FLIGHT_LOCAL_TIME");
-     cin >> time;
+     std::string zone;
+     int offset = 0;
+     int flightduration = 0;
+     std::string destZone;
+     int destOffset = 0;
 
-     int offset;
-     PrintLang("FLIGHT_GMT_OFFSET");
+     std::cout << "\n> ";
+     getline(cin >> ws, time);
+
+     std::cout << "\n> ";
      cin >> offset;
 
-     std::string zone;
-     PrintLang("FLIGHT_ZONE_NAME");
-     cin >> zone;
+     cin.ignore();
+     std::cout << "\n> ";
+     getline(cin, zone);
 
-     GTMWatches* gtm = new GTMWatches(time, offset, zone);
-     gtm->Time = time;
-     gtm->user_id = user.id;
-     user.AddWatch(gtm);
+     std::cout << "\n> ";
+     cin >> flightduration;
 
-     int flightDuration;
-     PrintLang("FLIGHT_DURATION");
-     cin >> flightDuration;
+     cin.ignore();
+     std::cout << "\n> ";
+     getline(cin, destZone);
 
-     std::string destZone;
-     int destOffset;
-     PrintLang("FLIGHT_DEST_ZONE");
-     cin >> destZone;
-     PrintLang("FLIGHT_DEST_OFFSET");
+     std::cout << "\n> ";
      cin >> destOffset;
 
-     gtm->StartFlight(flightDuration);
-     PrintLang("FLIGHT_STARTED");
-     gtm->PrintStatus();
+     GTMWatches* gtm = new GTMWatches(time, offset, zone);
 
-     bool flying = true;
-     while (flying)
-     {
-         gtm->PrintStatus();
+     gtm->user_id = user.id;
 
-         DisplaySection("menu_" + config["language"] + ".txt",
-             "=== FLIGHT_CONTROL ===", "=== END FLIGHT_CONTROL ===");
+     user.AddWatch(gtm);
+     
+     std::cout << "\nПолёт успешно инициализирован!\n\n";
+     gtm->StartFlight(flightduration);
 
-         int choice;
-         PrintLang("ENTER_CHOICE");
-         cin >> choice;
-
-         switch (choice)
-         {
-         case 1:
-             gtm->SimulateFlightStep(30);
-             break;
-         case 2:
-             gtm->SimulateFlightStep(60);
-             break;
-         case 3:
-         {
-             int newOff;
-             std::string newZone;
-             PrintLang("FLIGHT_NEW_OFFSET");
-             cin >> newOff;
-             PrintLang("FLIGHT_NEW_ZONE");
-             cin >> newZone;
-             gtm->ChangeTimezone(newOff, newZone);
-             break;
-         }
-         case 4:
-             gtm->ChangeTimezone(destOffset, destZone);
-             gtm->SimulateFlightStep(flightDuration - gtm->FlightTime);
-             PrintLang("FLIGHT_ARRIVED");
-             flying = false;
-             break;
-         case 5:
-             flying = false;
-             break;
-         default:
-             PrintLang("ERROR_INVALID_CHOICE");
-         }
-     }
-
-     gtm->PrintFlightSummary();
-     gtm->Save();
      PrintLang("FLIGHT_FINISHED");
      SaveSession(user);
  }
@@ -644,10 +700,10 @@ void start_program() {
              int type = 1;                                 
              file.write((char*)&type, sizeof(type));
 
-             int offset = gtm->GTMOffset;
+             int offset = gtm->GetGTMOffset();
              size_t tLen = gtm->Time.length();
              size_t sLen = gtm->SecondTime.length();
-             size_t zLen = gtm->SecondZoneName.length();
+             size_t zLen = gtm->GetSecondZoneName().length();//SecondZoneName.length();
 
              file.write((char*)&offset, sizeof(offset));
              file.write((char*)&tLen, sizeof(tLen));
@@ -655,7 +711,7 @@ void start_program() {
              file.write((char*)&sLen, sizeof(sLen));
              file.write(gtm->SecondTime.c_str(), sLen);
              file.write((char*)&zLen, sizeof(zLen));
-             file.write(gtm->SecondZoneName.c_str(), zLen);
+             file.write(gtm->GetSecondZoneName().c_str(), zLen);
          }
          else if (DiveComp* dc = dynamic_cast<DiveComp*>(w))
          {
@@ -667,16 +723,24 @@ void start_program() {
              file.write(dc->Time.c_str(), timeLen);
 
              file.write((char*)&dc->CurDepth, sizeof(dc->CurDepth));
-             file.write((char*)&dc->Temp, sizeof(dc->Temp));
+             int tempVal = dc->GetTemp();
+             file.write((char*)&tempVal, sizeof(tempVal));
 
             
-             size_t mixLen = dc->Mix ? strlen(dc->Mix) : 0;
-             file.write((char*)&mixLen, sizeof(mixLen));
-             if (dc->Mix) file.write(dc->Mix, mixLen);
 
-             size_t vidLen = dc->Vid ? strlen(dc->Vid) : 0;
-             file.write((char*)&vidLen, sizeof(vidLen));
-             if (dc->Vid) file.write(dc->Vid, vidLen);
+             std::string mixStr = dc->GetMix();
+             size_t mixLen = mixStr.length();
+             file.write((char*)&mixLen, sizeof(mixLen));
+             if (mixLen > 0) {
+                 file.write(mixStr.c_str(), mixLen);
+             }
+             
+             std::string vidStr = dc->Vid;
+             size_t vidlen = vidStr.length();
+             file.write((char*)&vidlen, sizeof(vidlen));
+             if (vidlen > 0) {
+                 file.write(vidStr.c_str(), vidlen);
+             }
          }
      }
 
@@ -730,7 +794,8 @@ void start_program() {
              size_t tLen, sLen, zLen;
 
              file.read((char*)&offset, sizeof(offset));
-             gtm->GTMOffset = offset;
+             gtm->SetGTMOffset(offset);
+             //gtm->GTMOffset = offset;
 
              file.read((char*)&tLen, sizeof(tLen));
              gtm->Time.resize(tLen);
@@ -741,34 +806,60 @@ void start_program() {
              file.read(&gtm->SecondTime[0], sLen);
 
              file.read((char*)&zLen, sizeof(zLen));
-             gtm->SecondZoneName.resize(zLen);
-             file.read(&gtm->SecondZoneName[0], zLen);
+             std::string tempZoneName;
+             tempZoneName.resize(zLen);
+             if (zLen > 0) {
+                 file.read(&tempZoneName[0], zLen);
+             }
+             gtm->SetSecondTime(tempZoneName);
+
 
              user.AddWatch(gtm);
          }
          else if (type == 2) // DiveComp
          {
-             DiveComp* dc = new DiveComp((char*)"Recreational", 1, 60, 1, 15, 0, (char*)"Air");
+             DiveComp* dc = new DiveComp("Recreational", 1, 60, 1, 15, 0, "Air");
 
-             size_t timeLen;
+             // 2. Безопасно читаем время (Time публичное, но через временную строку чище)
+             size_t timeLen = 0;
              file.read((char*)&timeLen, sizeof(timeLen));
-             dc->Time.resize(timeLen);
-             file.read(&dc->Time[0], timeLen);
-
-             file.read((char*)&dc->CurDepth, sizeof(dc->CurDepth));
-             file.read((char*)&dc->Temp, sizeof(dc->Temp));
-
-             
-             size_t mixLen;
-             file.read((char*)&mixLen, sizeof(mixLen));
-             if (mixLen > 0) {
-                 char* mix = new char[mixLen + 1];
-                 file.read(mix, mixLen);
-                 mix[mixLen] = '\0';
-                 dc->SetMix(mix);
-                 delete[] mix;
+             std::string timeStr;
+             timeStr.resize(timeLen);
+             if (timeLen > 0) {
+                 file.read(&timeStr[0], timeLen);
              }
+             dc->Time = timeStr;
 
+             // 3. Читаем текущую глубину (поле CurDepth публичное, можно напрямую)
+             file.read((char*)&dc->CurDepth, sizeof(dc->CurDepth));
+
+             // 4. Читаем температуру (Temp приватное -> через локальную переменную и сеттер)
+             int tempVal = 0;
+             file.read((char*)&tempVal, sizeof(tempVal));
+             dc->SetTemp(tempVal);
+
+             // 5. Безопасно читаем смесь (Mix приватное -> через временную std::string)
+             size_t mixLen = 0;
+             file.read((char*)&mixLen, sizeof(mixLen));
+             std::string mixStr;
+             mixStr.resize(mixLen);
+             if (mixLen > 0) {
+                 file.read(&mixStr[0], mixLen);
+             }
+             dc->SetMix(mixStr); // Передаем локальную строку в сеттер
+
+             // 6. ВОССТАНАВЛИВАЕМ СДВИГ ФАЙЛА: Читаем режим (Vid)
+             // Мы записывали его в Save(), значит обязаны считать здесь!
+             size_t vidLen = 0;
+             file.read((char*)&vidLen, sizeof(vidLen));
+             std::string vidStr;
+             vidStr.resize(vidLen);
+             if (vidLen > 0) {
+                 file.read(&vidStr[0], vidLen);
+             }
+             dc->Vid = vidStr; // Поле Vid публичное в твоем новом хедере, пишем напрямую
+
+             // 7. Добавляем полностью восстановленный девайс пользователю
              user.AddWatch(dc);
          }
      }
@@ -779,3 +870,29 @@ void start_program() {
      return true;
  }
 
+
+
+ std::string AddMinutesToTime(const std::string& currentTime, int minutesToAdd) {
+     if (currentTime.empty() || minutesToAdd <= 0)
+         return currentTime;
+
+     int hours = 0, minutes = 0;
+     char colon;
+
+     std::istringstream iss(currentTime);
+     iss >> hours >> colon >> minutes;
+
+     minutes += minutesToAdd;
+
+     hours += minutes / 60;
+     minutes = minutes % 60;
+
+     hours = hours % 24;
+
+     std::ostringstream oss;
+     oss << std::setw(2) << std::setfill('0') << hours << ":"
+         << std::setw(2) << std::setfill('0') << minutes;
+
+     return oss.str();
+
+ }
