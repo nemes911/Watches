@@ -94,13 +94,28 @@ DiveComp& DiveComp::operator--() {
 
 
 void DiveComp::StartDescent() {
-    std::cout << "\n=== Начинается спуск ===\n";
-    while (CurDepth < MaxDepth) {
-        CurDepth += std::min(5, MaxDepth - CurDepth);
-        std::cout << "Глубина: " << CurDepth << " м\n";
-        AddLog("Descent to " + std::to_string(CurDepth) + "m");
+
+    int initialTemp = Temp;  // запоминаем начальную температуру
+
+    while (CurDepth < MaxDepth)
+    {
+        int step = std::min(5, MaxDepth - CurDepth);
+        CurDepth += step;
+
+        // Уменьшаем температуру каждые 100 метров
+        int depthHundreds = CurDepth / 100;           // сколько полных 100-метров прошло
+        Temp = initialTemp - (depthHundreds * 2);
+
+        // Не даём температуре уйти в отрицательные значения
+        if (Temp < -2) Temp = -2;
+
+        std::cout << "Глубина: " << std::setw(3) << CurDepth
+            << " м | Температура: " << Temp << "°C\n";
+
+        AddLog("Descent to " + std::to_string(CurDepth) + "m, Temp: "
+            + std::to_string(Temp) + "C");
+
     }
-    std::cout << "Достигнута максимальная глубина!\n";
 }
 
 bool DiveComp::Ascend(int meters)

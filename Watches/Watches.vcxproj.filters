@@ -91,10 +91,6 @@
     <Text Include="menu_ru.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
-    <Text Include="DiveComp.txt" />
-    <Text Include="DivingWatches.txt" />
-    <Text Include="GTMWatches.txt" />
-    <Text Include="User.txt" />
     <Text Include="Watches.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>

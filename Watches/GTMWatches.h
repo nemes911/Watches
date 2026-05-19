@@ -24,6 +24,7 @@ public:
     int GetGTMOffset();
     int ExtractHours(const std::string& time);
     int ExtractMinutes(const std::string& time);
+    void NextGTM(int gtm);
     void CalculateSecondTime();
     void StartFlight(int durationMinutes);
     void ChangeTimezone(int newOffset, std::string newZoneName);

@@ -173,79 +173,28 @@ void settingsMenu() {
 }
 
 // ================= MAIN MENU_ =================
-void mainMenu_() {
-    int choice;
-    while (true) {
-        system("cls");
-        string langCode = config["language"];
-        DisplaySection("menu_" + langCode + ".txt", "=== MAIN MENU ===", "=== END MAIN MENU ===");
-        PrintLang("Выберите пункт");
-        cin >> choice;
-        if (cin.fail())
-        {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            PrintLang("ERROR_INPUT");
-            system("pause");
-            continue;
-        }
-        if (choice == 1) {
-            system("cls");
-
-            User user("", 0, "");
-
-         
-            DisplaySection("menu_" + langCode + ".txt", "=== MAKE USER ===", "=== END USER ===");
-
-          
-            cout << "\nВаш выбор: ";
-            getline(cin >> ws, user.name);           
-
-            cout << "\nВведите GTM (смещение): ";
-            cin >> user.GTM;
-
-            cin.ignore(); 
-            cout << "\nВведите географическое положение: ";
-            getline(cin, user.Geografy);
-
-            cout << "\nПользователь успешно создан!\n\n";
-            user.PrintWatches();
-
-
-            DisplaySection("menu_" + langCode + ".txt", "=== SCENARIOS ===", "=== END SCENARIOS ===");
-
-            int scen;
-            PrintLang("Выбирите сценарий");
-            cin >> scen;
-            switch (scen) {
-            case 1: FlightScenario(user); break;
-            case 2: SwimingScenaries(user); break;
-            case 3: DiveScenario(user); break;
-            default: PrintLang("ERROR_INVALID_CHOICE"); break;
-            }
-
-            SaveSession(user);
-            system("pause");
-
-        }
-        else if (choice == 2) {
-
-        }
-    }
-}
-// ================= MAIN MENU =================
-void mainMenu()
+void mainMenu_()
 {
     int choice;
+    User* currentUser = nullptr;   
+    std::string newpath;// указатель на текущего пользователя
+
     while (true)
     {
         system("cls");
         string langCode = config["language"];
-
+        DisplaySection("menu_" + langCode + ".txt", "=== LOG INF ===", "=== END LOG ===");
+        cin >> newpath;
+        if (newpath != "n") {
+            continue;
+        }
+        else {
+            logPath = newpath;
+        }
 
         DisplaySection("menu_" + langCode + ".txt", "=== MAIN MENU ===", "=== END MAIN MENU ===");
 
-        PrintLang("ENTER_CHOICE");
+        PrintLang("Выберите пункт");
         cin >> choice;
 
         if (cin.fail())
@@ -257,65 +206,64 @@ void mainMenu()
             continue;
         }
 
-        if (choice == 1)  
+        
+
+        if (choice == 1)   // Создать пользователя + сценарии
         {
-            system("cls");
-            User user("", 0, "");
+            if (currentUser == nullptr)
+            {
+                currentUser = new User("", 0, "");
 
-            PrintLang("ENTER_NAME");     cin >> user.name;
-            PrintLang("ENTER_GTM");      cin >> user.GTM;
-            PrintLang("ENTER_GEO");      cin >> user.Geografy;
+                DisplaySection("menu_" + langCode + ".txt", "=== MAKE USER ===", "=== END USER ===");
 
-         
+                cout << "\nВаш выбор: ";
+                getline(cin >> ws, currentUser->name);
+                cout << "\nВведите GTM (смещение): ";
+                cin >> currentUser->GTM;
+                cin.ignore();
+                cout << "\nВведите географическое положение: ";
+                getline(cin, currentUser->Geografy);
+
+                cout << "\nПользователь успешно создан!\n\n";
+                currentUser->PrintWatches();
+            }
+            else
+            {
+                cout << "\nИспользуется текущий пользователь: " << currentUser->name << "\n\n";
+            }
+
+            // Выбор сценария
             DisplaySection("menu_" + langCode + ".txt", "=== SCENARIOS ===", "=== END SCENARIOS ===");
-
             int scen;
-            PrintLang("ENTER_SCENARIO_CHOICE");
+            PrintLang("Выбирите сценарий");
             cin >> scen;
 
             switch (scen)
             {
-            case 1: FlightScenario(user); break;
-            case 2: SwimingScenaries(user); break;
-            case 3: DiveScenario(user); break;
-            default: PrintLang("ERROR_INVALID_CHOICE"); break;
+            case 1:
+                FlightScenario(*currentUser);
+                break;
+            case 2:
+                SwimingScenaries(*currentUser);
+                break;
+            case 3:
+                DiveScenario(*currentUser);
+                break;
+            default:
+                PrintLang("ERROR_INVALID_CHOICE");
+                break;
             }
 
-            cout << "\n";
-            user.PrintWatches();
-            SaveSession(user);
             system("pause");
         }
-        else if (choice == 2)
+        else if (choice == 2)   // Выход
         {
-            Display("author_" + langCode + ".txt");
-            system("pause");
-        }
-        else if (choice == 3)
-        {
-            Display("rykovodstvo_" + langCode + ".txt");
-            system("pause");
-        }
-        else if (choice == 4)
-        {
-            Display("o_programme_" + langCode + ".txt");
-            system("pause");
-        }
-        else if (choice == 5)
-        {
-            settingsMenu();
-        }
-        else if (choice == 6)
-        {
-            PrintLang("LOADING_SESSION");
-            User loadedUser("Loaded", 0, "Unknown");
-            if (LoadSession(loadedUser))
-                PrintLang("SESSION_LOADED_SUCCESS");
-            system("pause");
-        }
-        else if (choice == 7)
-        {
-            break; 
+            std::cout << "\nВыход из программы...\n";
+            if (currentUser != nullptr)
+            {
+                delete currentUser;     
+            }
+            break;
         }
         else
         {
@@ -324,6 +272,7 @@ void mainMenu()
         }
     }
 }
+
 
 // ================= START =================
 void start_program() {
@@ -382,7 +331,7 @@ void start_program() {
 // ================= ZASTAVKA =================
  void zastavka_()
  {
-     while (true)  // Для возможности смены языка
+     while (true)  
      {
          system("cls");
 
@@ -409,25 +358,25 @@ void start_program() {
          }
          fin.close();
 
-         // Ожидание нажатия клавиши (без вывода текста)
+         
          while (true)
          {
              int key = _getch();
 
-             if (key == 13)                    // ENTER — начать
+             if (key == 13)                    
              {
                  system("cls");
                  return;
              }
-             else if (key == 9)                // TAB — смена языка
+             else if (key == 9)               
              {
-                 // Смена языка
+               
                  if (config["language"] == "ru")
                      config["language"] = "en";
                  else
                      config["language"] = "ru";
 
-                 // Перезагружаем язык
+            
                  try
                  {
                      std::string langFile = "lang_" + config["language"] + ".txt";
@@ -440,7 +389,7 @@ void start_program() {
 
                  break;      
              }
-             else if (key == 27)               // ESC — выход
+             else if (key == 27)               
              {
                  exit(0);
              }
@@ -506,7 +455,6 @@ void start_program() {
      user.AddWatch(dive);
 
      std::cout << "\n=== Простое погружение начато ===\n";
-     SaveSession(user);
 
      system("pause"); 
      
@@ -568,18 +516,18 @@ void start_program() {
              dive->Stay(15);
              break;
          case 2:
-             --(*dive);                    // всплытие на 1 метр
+             --(*dive);                   
              break;
          case 3:
              dive->Ascend(5);             
              break;
-         case 4: // Аварийное всплытие
+         case 4: 
              std::cout << "!!! АВАРИЙНОЕ ВСПЛЫТИЕ !!!\n";
              dive->CurDepth = 0;
              diving = false;
              AddLog("Emergency ascent");
              break;
-         case 5: // Завершить погружение
+         case 5: 
              if (dive->CurDepth != 0)
                  PrintLang("ERROR_ASCEND_FIRST");
              else
@@ -599,9 +547,6 @@ void start_program() {
      dive->Save();
 
      AddLog("Dive finished. Total time: " + std::to_string(dive->DiveTime) + " min");
-     SaveSession(user);
-
-     std::cout << "\nСценарий погружения завершён.\n";
      system("pause");
  }
 
@@ -626,9 +571,6 @@ void start_program() {
 
      std::string zone = user.Geografy;
 
-     std::cout << "\n> ";
-     cin >> flightduration;
-
      cin.ignore();
      std::cout << "\n> ";
      getline(cin, destZone);
@@ -642,11 +584,18 @@ void start_program() {
 
      user.AddWatch(gtm);
      
-     std::cout << "\nПолёт успешно инициализирован!\n\n";
-     gtm->StartFlight(flightduration);
+     
 
+     while (gtm->GetGTMOffset() != destOffset)
+     {
+         int segmentTime = 60 + rand() % 81;   
+         gtm->SimulateFlightStep(segmentTime);
+         (*gtm)++;
+         gtm->NextGTM(gtm->GetGTMOffset());                       
+
+         AddLog("GTM" + std::to_string(gtm->GetGTMOffset()) + "TIME:" + gtm->Time);
+     }
      PrintLang("FLIGHT_FINISHED");
-     SaveSession(user);
  }
 
  void CreateLogFile(std::string path) {
@@ -689,207 +638,6 @@ void start_program() {
      file.close();
 
  }
-
- void SaveSession(User& user)
- {
-     std::ofstream file("session.bin", std::ios::binary | std::ios::trunc);
-     if (!file.is_open()) {
-         std::cout << "Ошибка создания session.bin\n";
-         return;
-     }
-
-
-     int userId = user.id;
-     int gtmOffset = user.GTM;
-     size_t nameLen = user.name.length();
-     size_t geoLen = user.Geografy.length();
-
-     file.write((char*)&userId, sizeof(userId));
-     file.write((char*)&gtmOffset, sizeof(gtmOffset));
-     file.write((char*)&nameLen, sizeof(nameLen));
-     file.write(user.name.c_str(), nameLen);
-     file.write((char*)&geoLen, sizeof(geoLen));
-     file.write(user.Geografy.c_str(), geoLen);
-
-
-     const auto& watches = user.GetWatches();
-     int watchCount = watches.size();
-     file.write((char*)&watchCount, sizeof(watchCount));
-
-     for (auto* w : watches)
-     {
-         if (GTMWatches* gtm = dynamic_cast<GTMWatches*>(w))
-         {
-             int type = 1;                                 
-             file.write((char*)&type, sizeof(type));
-
-             int offset = gtm->GetGTMOffset();
-             size_t tLen = gtm->Time.length();
-             size_t sLen = gtm->SecondTime.length();
-             size_t zLen = gtm->GetSecondZoneName().length();//SecondZoneName.length();
-
-             file.write((char*)&offset, sizeof(offset));
-             file.write((char*)&tLen, sizeof(tLen));
-             file.write(gtm->Time.c_str(), tLen);
-             file.write((char*)&sLen, sizeof(sLen));
-             file.write(gtm->SecondTime.c_str(), sLen);
-             file.write((char*)&zLen, sizeof(zLen));
-             file.write(gtm->GetSecondZoneName().c_str(), zLen);
-         }
-         else if (DiveComp* dc = dynamic_cast<DiveComp*>(w))
-         {
-             int type = 2;                               
-             file.write((char*)&type, sizeof(type));
-
-             size_t timeLen = dc->Time.length();
-             file.write((char*)&timeLen, sizeof(timeLen));
-             file.write(dc->Time.c_str(), timeLen);
-
-             file.write((char*)&dc->CurDepth, sizeof(dc->CurDepth));
-             int tempVal = dc->GetTemp();
-             file.write((char*)&tempVal, sizeof(tempVal));
-
-            
-
-             std::string mixStr = dc->GetMix();
-             size_t mixLen = mixStr.length();
-             file.write((char*)&mixLen, sizeof(mixLen));
-             if (mixLen > 0) {
-                 file.write(mixStr.c_str(), mixLen);
-             }
-             
-             std::string vidStr = dc->Vid;
-             size_t vidlen = vidStr.length();
-             file.write((char*)&vidlen, sizeof(vidlen));
-             if (vidlen > 0) {
-                 file.write(vidStr.c_str(), vidlen);
-             }
-         }
-     }
-
-     file.close();
-     std::cout << " Сессия успешно сохранена (" << watchCount << " часов)\n";
- }
-
- // ====================== LOAD SESSION ======================
- bool LoadSession(User& user)
- {
-     std::ifstream file("session.bin", std::ios::binary);
-     if (!file.is_open()) {
-         std::cout << "Файл session.bin не найден.\n";
-         return false;
-     }
-
-     user.ClearWatches();        
-
-    
-     int userId, gtmOffset;
-     size_t nameLen, geoLen;
-
-     file.read((char*)&userId, sizeof(userId));
-     file.read((char*)&gtmOffset, sizeof(gtmOffset));
-     file.read((char*)&nameLen, sizeof(nameLen));
-
-     user.name.resize(nameLen);
-     file.read(&user.name[0], nameLen);
-
-     file.read((char*)&geoLen, sizeof(geoLen));
-     user.Geografy.resize(geoLen);
-     file.read(&user.Geografy[0], geoLen);
-
-     user.id = userId;
-     user.GTM = gtmOffset;
-
-   
-     int watchCount;
-     file.read((char*)&watchCount, sizeof(watchCount));
-
-   
-     for (int i = 0; i < watchCount; ++i)
-     {
-         int type;
-         file.read((char*)&type, sizeof(type));
-
-         if (type == 1) 
-         {
-             GTMWatches* gtm = new GTMWatches();
-             int offset;
-             size_t tLen, sLen, zLen;
-
-             file.read((char*)&offset, sizeof(offset));
-             gtm->SetGTMOffset(offset);
-        
-
-             file.read((char*)&tLen, sizeof(tLen));
-             gtm->Time.resize(tLen);
-             file.read(&gtm->Time[0], tLen);
-
-             file.read((char*)&sLen, sizeof(sLen));
-             gtm->SecondTime.resize(sLen);
-             file.read(&gtm->SecondTime[0], sLen);
-
-             file.read((char*)&zLen, sizeof(zLen));
-             std::string tempZoneName;
-             tempZoneName.resize(zLen);
-             if (zLen > 0) {
-                 file.read(&tempZoneName[0], zLen);
-             }
-             gtm->SetSecondTime(tempZoneName);
-
-
-             user.AddWatch(gtm);
-         }
-         else if (type == 2) 
-         {
-             DiveComp* dc = new DiveComp("Recreational", 1, 60, 1, 15, 0, "Air");
-
-     
-             size_t timeLen = 0;
-             file.read((char*)&timeLen, sizeof(timeLen));
-             std::string timeStr;
-             timeStr.resize(timeLen);
-             if (timeLen > 0) {
-                 file.read(&timeStr[0], timeLen);
-             }
-             dc->Time = timeStr;
-
-             file.read((char*)&dc->CurDepth, sizeof(dc->CurDepth));
-
-
-             int tempVal = 0;
-             file.read((char*)&tempVal, sizeof(tempVal));
-             dc->SetTemp(tempVal);
-
-          
-             size_t mixLen = 0;
-             file.read((char*)&mixLen, sizeof(mixLen));
-             std::string mixStr;
-             mixStr.resize(mixLen);
-             if (mixLen > 0) {
-                 file.read(&mixStr[0], mixLen);
-             }
-             dc->SetMix(mixStr); 
-
-           
-             size_t vidLen = 0;
-             file.read((char*)&vidLen, sizeof(vidLen));
-             std::string vidStr;
-             vidStr.resize(vidLen);
-             if (vidLen > 0) {
-                 file.read(&vidStr[0], vidLen);
-             }
-             dc->Vid = vidStr; 
-
-             user.AddWatch(dc);
-         }
-     }
-
-     file.close();
-     std::cout << " Сессия успешно загружена (" << watchCount << " часов)\n";
-     user.PrintWatches();
-     return true;
- }
-
 
 
  std::string AddMinutesToTime(const std::string& currentTime, int minutesToAdd) {

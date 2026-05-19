@@ -1,12 +1,7 @@
 === MAIN MENU ===
 === Main Menu ===
-1. New Scenario (Start)
-2. About the Author
-3. User Guide
-4. About the Program
-5. Settings
-6. Load Session
-7. Exit the Program
+1. Start Scenario
+2. Exit Program
 === END MAIN MENU ===
 
 === SCENARIOS ===
@@ -17,22 +12,23 @@ Select a scenario:
 === END SCENARIOS ===
 
 === DIVE_CONTROL ===
-Dive Control:
-1. Stay at Depth (15 min)
-2. Ascend to 1 Meter
-3. Ascend to 5 Meters
-4. Emergency Ascent
+Dive Controls:
+1. Remain at depth (15 min)
+2. Ascend to 1 meter
+3. Ascend to 5 meters
+4. Emergency Ascension
 5. End Dive
 === END DIVE_CONTROL ===
 
 === FLIGHT_CONTROL ===
 Flight Controls:
 1. Simulate 30 minutes of flight
-2. Simulate 1 hour of flight
+2. Simulate 1 hour flight
 3. Change time zone (stopover)
 4. Arrive at destination
 5. End scenario
 === END FLIGHT_CONTROL ===
+
 
 === MAKE USER ===
 1. Enter Name
@@ -42,25 +38,26 @@ Flight Controls:
 
 === MAKE FLIGHT ===
 === New Flight ===
-Enter local departure time (e.g. 2:30 PM):
-Enter current GTM (offset):
-Enter time zone name (e.g. MSK):
-Enter flight duration in minutes:
-Enter destination (zone name):
-Enter destination GTM:
+Enter Local Departure Time (e.g. 2:30 PM):
+Enter Destination (Zone Name):
+Enter Destination GTM:
 === END FLIGHT ===
 
 === DIVE COMP ===
 === Dive Computer ===
-Enter dive start time (HH:MM):
-Enter maximum depth (meters):
-Enter water temperature (°C):
+Enter Dive Start Time (HH:MM):
+Enter Maximum Depth (meters):
+Enter Water Temperature (°C):
 === END DIVE COMP ===
 
 === MAKE DIVE ===
-=== Create a Simple Dive ===
+=== Creating a Simple Dive ===
 Enter dive start time (HH:MM):
 Enter maximum depth (meters):
 Enter bezel value (minutes):
 Enter watch type (1 - Professional, 0 - Regular):
 === END DIVE ===
+
+=== LOG INF ===
+set the path to the log file or press n
+=== END LOG ===

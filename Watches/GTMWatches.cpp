@@ -1,4 +1,4 @@
-#include "GTMWatches.h"
+п»ї#include "GTMWatches.h"
 #include <fstream>
 #include "Logical.h"
 
@@ -83,58 +83,69 @@ void GTMWatches::Print() {
 }
 
 void GTMWatches::StartFlight(int durationMinutes) {
-	if (durationMinutes <= 0)
-    {
-        std::cout << "Ошибка: продолжительность полёта должна быть больше 0.\n";
-        return;
-    }
+	
 
-    FlightTime = durationMinutes;      
+    FlightTime = 0;      
     OriginalOffset = GTMOffset;        
 
-    std::cout << "\n=== Полёт успешно начат ===\n";
-    std::cout << "Продолжительность: " << durationMinutes << " минут ("
-              << durationMinutes / 60 << " ч " << durationMinutes % 60 << " мин)\n";
-    std::cout << "Отправление: " << Time << " | " 
-              << " (GMT" << (GTMOffset >= 0 ? "+" : "") << GTMOffset << ")\n";
+    std::cout << "\n=== РџРѕР»С‘С‚ СѓСЃРїРµС€РЅРѕ РЅР°С‡Р°С‚ ===\n";
+	std::cout << "Р’СЂРµРјСЏ РѕС‚РїСЂР°РІР»РµРЅРёСЏ: " << Time
+		<< " | GMT" << (GTMOffset >= 0 ? "+" : "") << GTMOffset << "\n";
+	std::cout << "==========================================\n";
     
 
-    std::cout << std::string(50, '-') << "\n";
 }
 
 void GTMWatches::ChangeTimezone(int newOffset, std::string newZoneName) {
+	int oldOffset = GTMOffset;
 	GTMOffset = newOffset;
 	SecondZoneName = newZoneName;
+
 	CalculateSecondTime();
-	std::cout << "\n>>> Смена часового пояса на " << newZoneName
-		<< " (GMT " << (newOffset >= 0 ? "+" : "") << newOffset << ") <<<\n";
+
+	std::cout << "\n>>> РЎРјРµРЅР° С‡Р°СЃРѕРІРѕРіРѕ РїРѕСЏСЃР° ===\n";
+	std::cout << "Р‘С‹Р»Рѕ: GMT" << (oldOffset >= 0 ? "+" : "") << oldOffset
+		<< "  в†’  РЎС‚Р°Р»Рѕ: GMT" << (newOffset >= 0 ? "+" : "") << newOffset
+		<< " (" << newZoneName << ")\n";
+}
+
+void GTMWatches::NextGTM(int gtm) {
+	SetGTMOffset(gtm);
 }
 
 void GTMWatches::SimulateFlightStep(int minutesPassed)
 {
+	if (minutesPassed <= 0) return;
+
 	FlightTime += minutesPassed;
 
-	int h = ExtractHours(Time);
-	int m = ExtractMinutes(Time);
+	
+	int h = ExtractHours(SecondTime);
+	int m = ExtractMinutes(SecondTime);
+
 	m += minutesPassed;
 	h += m / 60;
 	m %= 60;
+
 	if (h >= 24) h -= 24;
+	if (h < 0)   h += 24;
 
 	Time = (h < 10 ? "0" : "") + std::to_string(h) + ":" +
 		(m < 10 ? "0" : "") + std::to_string(m);
 
 	CalculateSecondTime();
+	
 }
 
 void GTMWatches::PrintStatus() const
 {
-	std::cout << "\n=== GTM Watches - Полёт ===\n";
-	std::cout << "Местное время:     " << Time << "\n";
-	std::cout << "Второе время:      " << SecondTime << " (" << SecondZoneName << ")\n";
-	std::cout << "Текущий GTM:       " << GTMOffset << "\n";
-	std::cout << "Время в полёте:    " << FlightTime << " мин\n";
-	std::cout << "===========================\n";
+	std::cout << "\n=== GTM Watches вЂ” РџРѕР»С‘С‚ ===\n";
+	std::cout << "РўРµРєСѓС‰РµРµ РІСЂРµРјСЏ     : " << Time
+		<< " (GMT" << (GTMOffset >= 0 ? "+" : "") << GTMOffset << ")\n";
+	std::cout << "Р’С‚РѕСЂРѕРµ РІСЂРµРјСЏ      : " << SecondTime
+		<< " (" << SecondZoneName << ")\n";
+	std::cout << "Р’СЂРµРјСЏ РІ РїРѕР»С‘С‚Рµ    : " << FlightTime << " РјРёРЅСѓС‚\n";
+	std::cout << "==================================\n";
 }
 
 void GTMWatches::CreatedGTMWatches(const GTMWatches& gtm) {
